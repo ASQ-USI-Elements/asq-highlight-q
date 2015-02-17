@@ -1,0 +1,31 @@
+{
+  "name": "asq-highlight",
+  "version": "0.0.0",
+  "homepage": "https://github.com/ASQ-USI/asq-highlight",
+  "authors": [
+    "Vasileios Triglianos <triglian@gmail.com>"
+  ],
+  "description": "Element for asq-highlight question type",
+  "keywords": [
+    "ASQ"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.1",
+    "ace-element": "git@github.com:PolymerLabs/ace-element.git",
+    "asq-base": "ASQ-USI/asq-base#master",
+    "paper-elements": "Polymer/paper-elements#~0.5.1",
+    "core-elements" :  "polymer/core-elements#~0.5.1",
+    "bootstrap": "~3.3.1"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.0-rc1"
+  }
+}

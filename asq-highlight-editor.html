@@ -1,0 +1,298 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-icons/core-icons.html">
+<link rel="import" href="../core-menu/core-menu.html">
+<link rel="import" href="../core-toolbar/core-toolbar.html">
+
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../paper-dropdown/paper-dropdown.html">
+<link rel="import" href="../paper-input/paper-input-decorator.html">
+<link rel="import" href="../paper-input/paper-autogrow-textarea.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-dialog/paper-action-dialog.html" >
+<link rel="import" href="../paper-dialog/paper-action-dialog.html" >
+<link rel="import" href="../paper-toggle-button/paper-toggle-button.html" >
+
+<link rel="import" href="elements/asq-hl-color-task/asq-hl-color-task.html">
+<link rel="import" href="elements/color-palette.html">
+<link rel="import" href="asq-highlight.html">
+
+<polymer-element name="asq-highlight-editor" attributes="stem">
+
+  <template>
+    <link rel="stylesheet" type="text/css" href="asq-highlight-editor.css">
+
+    <core-toolbar>
+
+      <core-icon-button icon="unfold-more" title="Get code" class="rotate" id="showMarkupBtn" on-click="{{showMarkup}}"></core-icon-button>
+
+      <core-icon-button icon="assignment" title="Get solution" id="showSolutionBtn" on-click="{{showSolution}}"></core-icon-button>
+
+
+      <span class="separator"></span>
+
+      <paper-dropdown-menu label="Syntax">
+          <paper-dropdown class="dropdown">
+              <core-menu class="menu" selected="0" selectedItem="{{syntaxModeItem}}">
+              <template repeat="{{mode in syntaxModes}}">
+                <paper-item file="{{mode.file}}">{{mode.name}}</paper-item>
+              </template>
+              
+              </core-menu>
+          </paper-dropdown>
+      </paper-dropdown-menu>&nbsp;
+
+       <paper-dropdown-menu label="Theme">
+          <paper-dropdown class="dropdown">
+              <core-menu class="menu"  selected="0" selectedItem="{{themeItem}}">
+              <template repeat="{{t in themes}}">
+                <paper-item file="{{t.file}}">{{t.name}}</paper-item>
+              </template>
+              
+              </core-menu>
+          </paper-dropdown>
+      </paper-dropdown-menu>
+
+      <span class="separator"></span>
+      
+      <span id="editLabel" class="{{ {active: !$.toggleBtn.checked} | tokenList}}" on-click="{{setMode}}">Edit</span> <paper-toggle-button id="toggleBtn" on-change="{{toggleMode}}" on-core-change="{{toggleMode}}"checked></paper-toggle-button> <span id="highlightLabel" class="{{ {active: $.toggleBtn.checked} | tokenList}}" on-click="{{setMode}}">Highlight</span>
+
+      <div flex></div>
+       <h5><code style="padding: 4px 0 3px;">&lt;asq-highlight&gt;</code> <span style="color:#666;">editor</span></h5>
+
+    </core-toolbar>
+    
+    <section id="elementConf">
+      <paper-input-decorator label="Stem (HTML is allowed; use responsibly)" layout vertical>
+        <paper-autogrow-textarea style="margin:0;">
+          <textarea id="stemTextarea" ></textarea>
+        </paper-autogrow-textarea>
+      </paper-input-decorator>
+
+
+      <div id="newTaskContainer" layout horizontal>
+        <paper-input-decorator flex label="Task description (HTML is allowed)" layout vertical>
+          <paper-autogrow-textarea style="margin:0;">
+            <textarea id="newTaskTextarea" ></textarea>
+          </paper-autogrow-textarea>
+        </paper-input-decorator>
+        <color-palette id="colorPalette"></color-palette>
+        <paper-input id="colorName" label="colorName"></paper-input> &nbsp;  &nbsp;
+
+        
+
+        <core-icon-button icon="add-box" id="addTask" on-click="{{addTask}}">Create task</core-icon-button>
+      </div>
+    </section>
+
+    <!-- Duplicate color dialog -->
+    <paper-action-dialog id="sameColorDialog" backdrop autoCloseDisabled layered="false">
+      <p>You already have a task with this color!</p>
+
+      <paper-button affirmative autofocus>CLOSE</paper-button>
+    </paper-action-dialog>
+
+
+    <!-- markup dialog -->
+    <paper-action-dialog id="markupDialog" on-core-overlay-open-completed="{{coreOverlayOpenCompleted}}" backdrop layered="false">
+      <div id="aceContainer">
+        <ace-element id="markupEditor" theme="textmate" mode="html"></ace-element>
+      </div>
+    
+    
+      <paper-button affirmative autofocus>CLOSE</paper-button>
+    </paper-action-dialog>
+
+  </section>
+
+
+  <!-- <hr> -->
+  <br><br><br><br>
+  
+  <asq-highlight id="asqHighlight"  theme="{{theme}}" mode="{{syntaxMode}}">
+    <asq-stem id="leStem"></asq-stem>
+    <template repeat="{{t, idx in tasks}}">
+      <asq-hl-color-task color="{{t.color}}" idx="{{idx}}" colorName="{{t.colorName}}">{{t.html}}<core-icon-button icon="close" on-click="{{removeTask}}"></core-icon-button></asq-hl-color-task>
+    </template>   
+  </asq-highlight>
+  </template>
+  <script>
+    Polymer({
+      stem: "",
+
+      created: function(){
+        this.tasks = [];
+        this.colors = Object.create(null);
+
+        this.syntaxModes = [
+         {file: 'coffee'        , name : 'CoffeeScript'},
+         {file: 'c_cpp'         , name : 'C/C++'       },
+         {file: 'css'           , name : 'CSS'         },
+         {file: 'html'          , name : 'HTML'        },
+         {file: 'jade'          , name : 'Jade'        },
+         {file: 'java'          , name : 'Java'        },
+         {file: 'javascript'    , name : 'Javascript'  },
+         {file: 'json'          , name : 'JSON'        },
+         {file: 'less'          , name : 'LESS'        },
+         {file: 'php'           , name : 'PHP'         },
+         {file: 'python'        , name : 'Python'      },
+         {file: 'ruby'          , name : 'Ruby'        },
+         {file: 'sass'          , name : 'SASS'        },
+         {file: 'scss'          , name : 'SCSS'        },
+         {file: 'sql'           , name : 'SQL'         },
+         {file: 'xml'           , name : 'XML'         },
+         {file: 'yaml'          , name : 'YAML'        }
+        ];
+
+        this.themes = [ 
+          {file: "chrome"                  , name: "Chrome"                },
+          {file: "clouds"                  , name: "Clouds"                },
+          {file: "crimson_editor"          , name: "Crimson Editor"        },
+          {file: "dawn"                    , name: "Dawn"                  },
+          {file: "dreamweaver"             , name: "Dreamweaver"           },
+          {file: "eclipse"                 , name: "Eclipse"               },
+          {file: "gitHub"                  , name: "GitHub"                },
+          {file: "solarized_light"         , name: "Solarized Light"       },
+          {file: "textmate"                , name: "TextMate"              },
+          {file: "tomorrow"                , name: "Tomorrow"              },
+          {file: "xcode"                   , name: "XCode"                 },
+          {file: "kuroir"                  , name: "Kuroir"                },
+          {file: "katzenmilch"             , name: "KatzenMilch"           }, 
+          {file: "ambiance"                , name: "Ambiance"              },
+          {file: "chaos"                   , name: "Chaos"                 },
+          {file: "clouds_midnight"         , name: "Clouds Midnight"       },
+          {file: "cobalt"                  , name: "Cobalt"                },
+          {file: "idle_fingers"            , name: "idle Fingers"          },
+          {file: "kr_theme"                , name: "krTheme"               },
+          {file: "merbivore"               , name: "Merbivore"             },
+          {file: "merbivore_soft"          , name: "Merbivore Soft"        },
+          {file: "mono_industrial"         , name: "Mono Industrial"       },
+          {file: "monokai"                 , name: "Monokai"               },
+          {file: "pastel_on_dark"          , name: "Pastel on dark"        },
+          {file: "solarized_dark"          , name: "Solarized Dark"        },
+          {file: "terminal"                , name: "Terminal"              },
+          {file: "tomorrow_night"          , name: "Tomorrow Night"        },
+          {file: "tomorrow_night_blue"     , name: "Tomorrow Night Blue"   },
+          {file: "tomorrow_night_bright"   , name: "Tomorrow Night Bright" },
+          {file: "tomorrow_night_eighties" , name: "Tomorrow Night 80s"    },
+          {file: "twilight"                , name: "Twilight"              },
+          {file: "vibrant_ink"             , name: "Vibrant Ink"           }
+        ]
+
+        //defaults  
+        this.syntaxMode = this.syntaxModes[0].file;
+        this.theme = this.themes[0].file;
+      },
+
+      ready:function(){
+        this.aceHighlightManager = this.$.asqHighlight.$.aceHighlightManager;
+        this.aceHighlightManager.mode = this.aceHighlightManager.MODE_HIGHLIGHT;
+
+        var ta = this.$.stemTextarea;
+        ta.onchange = ta.onblur = ta.onkeyup = this.stemTextareaChanged.bind(this);
+      },
+
+      syntaxModeItemChanged: function(){
+        this.syntaxMode = this.syntaxModeItem.getAttribute("file");
+      },
+
+      toggleMode:function(event, detail, sender){
+        if(sender.checked){
+          this.aceHighlightManager.mode = this.aceHighlightManager.MODE_HIGHLIGHT;
+        }else{
+          this.aceHighlightManager.mode = this.aceHighlightManager.MODE_EDIT_TEXT;
+        }
+      },
+
+      themeItemChanged: function(){
+        this.theme = this.themeItem.getAttribute("file");
+      },
+
+      addTask: function(evt){
+        var color = this.$.colorPalette.selectedColor.color;
+        if(this.colors[color]){
+          this.$.sameColorDialog.toggle();
+          return;
+        }
+        this.colors[color] = true;
+
+        var colorName = this.$.colorName.value.trim() || color;
+        var html = this.$.newTaskTextarea.value.trim() || "Task #" + (this.tasks.length + 1); 
+
+        this.tasks.push({
+          color : color,
+          colorName : colorName,
+          html : html
+        });
+
+      },
+
+      tasksChanged: function(){
+        this.$.asqHighlight.$.colorPalette.palette = this.tasks.map(function(task){
+          return {
+            'color': task.color,
+            'name' : task.colorName
+          }
+        }.bind(this));
+      },
+
+      removeTask:function(event, detail, sender){
+        var task = sender.parentNode;
+        var idx = task.getAttribute('idx')
+        delete this.colors[task.color];
+        this.tasks.splice(idx, 1);
+
+        this.aceHighlightManager.removeAllMarkers();
+      },
+
+      stemTextareaChanged: function(event){
+        this.stem = this.$.stemTextarea.value;
+        this.$.leStem.innerHTML = this.stem
+      },
+
+      coreOverlayOpenCompleted: function(event, detail, sender){
+        this.$.markupEditor.editor.resize();
+      },
+
+      getRanges: function(){
+        return this.aceHighlightManager.getHighlightRanges();
+      },
+
+      getMarkup: function(){
+        var html = '<asq-highlight '
+        html += 'theme="' + this.theme + '" ';
+        html += 'mode="' + this.syntaxMode + '">\n';
+
+        html += '  <asq-solution>' +JSON.stringify(this.getRanges(), null , 2) + '</asq-solution>\n'
+        html += '  <asq-stem>' + this.stem + '</asq-stem>\n'
+        
+        this.tasks.forEach(function(t){
+          html += '  <asq-hl-color-task color="' + t.color + '" colorName="' + t.colorName + '">' + t.html + '</asq-hl-color-task>\n'
+        });
+
+        html += '  <code>';
+        html += this.$.asqHighlight.$.codeEditor.editor.session.getValue();
+        html += '</code>\n';
+        
+        html += '</asq-highlight>';
+        return html;
+      },
+
+      setMode: function(event,detail, sender){
+        this.$.toggleBtn.checked = (sender.id == "highlightLabel")
+      },
+
+      showMarkup: function(){
+        this.$.markupEditor.editor.session.setValue(this.getMarkup());
+        this.$.markupDialog.toggle();
+      },
+
+      showSolution: function(){
+        var solution = JSON.stringify(this.getRanges(), null , 2);
+        this.$.markupEditor.editor.session.setValue(solution);
+        this.$.markupDialog.toggle();
+      }
+    });
+  </script>
+
+</polymer-element>

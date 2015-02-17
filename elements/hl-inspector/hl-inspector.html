@@ -1,0 +1,69 @@
+<link rel="import" href="../../../polymer/polymer.html">
+<link rel="import" href="../../../paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../paper-tabs/paper-tab.html"
+<link rel="import" href="../../../core-icon/core-icon.html">
+<link rel="import" href="../../../core-pages/core-pages.html">
+
+<polymer-element name="hl-inspector" attributes="selected rangeItems occurenceItems">
+
+  <template>
+    <link rel="stylesheet" type="text/css" href="hl-inspector.css">
+
+     <paper-tabs selected="{{selected}}" noink="" role="tablist" horizontal="" center="" layout="">     
+          <paper-tab role="tab" inline="" flex="" center-center="" horizontal="" layout="" class="core-selected" active="">Ranges</paper-tab>
+          <paper-tab role="tab" inline="" flex="" center-center="" horizontal="" layout="">Occurences</paper-tab>            
+        </paper-tabs>
+
+        <core-pages selected="{{selected}}">
+
+          <div>
+            <template repeat="{{r in rangeItems}}">
+              <li class="collapsed list-group-item" id="{{r.id}}" on-dblclick="{{expandClick}}">
+                <!-- <span class="label label-default {{r.colorClass}}">&nbsp;</span> -->
+                <core-icon id="coreIcon" icon="" aria-label="color" role="img" class="{{r.colorClass}}"></core-icon>
+                <button class="he-code-toggle" on-tap="{{expandClick}}">
+                  <core-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></core-icon><core-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></core-icon>
+                </button>                
+                <code class="he-highlighted-summary">{{r.summary}}</code>
+                <span class="badge">{{r.range}}</span>
+                <pre class="he-highlighted-code"><code>{{r.text}}</code></pre>
+              </li>
+            </template>
+          </div>
+
+          <div>
+            <template repeat="{{o in occurenceItems}}">
+              <li class="collapsed list-group-item" on-dblclick="{{expandClick}}">
+                <button class="he-code-toggle" on-tap="{{expandClick}}">
+                  <core-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></core-icon><core-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></core-icon>
+                </button>            
+                <code class="he-highlighted-summary">{{o.summary}}</code>
+                <span class="badge {{o.colorClass}}">{{o.occurences}}</span>
+                <pre class="he-highlighted-code"><code>{{o.text}}</code></pre>
+              </li>
+            </template>
+          </div>
+        </core-pages>
+        
+    </div>
+
+  </template>
+  <script>
+    Polymer({
+      created:function(){
+        this.selected = 0;
+        this.rangeItems = [];
+        this.occurenceItems = [];
+      },
+      expandClick: function(evt, detail, sender){
+        evt.preventDefault();
+        var nodeToToggle = sender;
+        if(sender.tagName == "BUTTON"){
+          nodeToToggle = sender.parentNode;
+        }
+        nodeToToggle.classList.toggle('expanded')
+      }
+    });
+  </script>
+
+</polymer-element>

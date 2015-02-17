@@ -1,0 +1,86 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../ace-element/ace-element.html">
+<link rel="import" href="../core-icon-button/core-icon-button.html">
+<link rel="import" href="../core-icons/editor-icons.html">
+<link rel="import" href="../core-selector/core-selector.html">
+<link rel="import" href="../core-toolbar/core-toolbar.html">
+
+<link rel="import" href="../asq-base/asq-base.html">
+<link rel="import" href="../asq-stem/asq-stem.html">
+
+<link rel="import" href="elements/ace-highlight-manager/ace-highlight-manager.html">
+<link rel="import" href="elements/asq-hl-color-task/asq-hl-color-task.html">
+<link rel="import" href="elements/color-palette.html">
+<link rel="import" href="elements/hl-inspector/hl-inspector.html">
+
+<script src="asq-highlight.js"></script>
+
+<polymer-element name="asq-highlight" attributes="mode theme solution fontSize">
+
+  <template>
+
+    <link rel="stylesheet" type="text/css" href="asq-highlight.css">
+    
+
+    <!-- Viewer -->
+    <template if="{{role == Roles.VIEWER}}">
+    <div id="leContent">
+      <content select=":not(code):not(asq-hl-color-task)"></content>
+      <core-selector id="taskSelector" selected="{{$.colorPalette.selected}}">
+        <content select="asq-hl-color-task"></content>
+      </core-selector>
+      <content select="asq-solution"></content>
+    </div>
+
+    <div id="container" flex layout horizontal>
+      <div layout vertical flex>
+
+        <core-toolbar>        
+          <color-palette id="colorPalette" on-down="{{setHighlightMode}}" palette="{{palette}}"></color-palette>
+          <core-icon-button id="eraseBtn" icon="editor:format-color-reset" title="Erase mode" on-tap="{{setEraseMode}}"></core-icon-button>
+          <span id="statusMsg">Working on "{{$.taskSelector.selectedItem.textContent}}"</span>
+        </core-toolbar>
+
+        <div id="aceContainer" flex>
+          <ace-element id="codeEditor" mode="{{mode}}" theme="{{theme}}" fontSize="{{fontSize}}"></ace-element>
+          <ace-highlight-manager id="aceHighlightManager" editor="{{$.codeEditor.editor}}" colors="{{palette}}" selectionColor="{{$.colorPalette.selectedColor}}"></ace-highlight-manager>
+        </div>
+
+      </div>
+      
+      <hl-inspector id='inspector' rangeItems="{{$.aceHighlightManager.rangeItems}}" occurenceItems="{{$.aceHighlightManager.occurenceItems}}" flex></hl-inspector>
+      
+    </div>
+    </template>
+    
+    <!-- Presenter -->
+    <template if="{{role == Roles.PRESENTER}}">
+    <div id="leContent">
+      <content select=":not(code):not(asq-hl-color-task)"></content>
+      <core-selector id="taskSelector" on-core-activate="{{onSelectedTaskChanged}}">
+        <content select="asq-hl-color-task"></content>
+      </core-selector>
+      <content select="asq-solution"></content>
+    </div>
+
+    <div id="container" flex layout horizontal>
+      <div layout vertical flex>
+
+        <core-toolbar>
+          <core-icon-button id="heatmapBtn" icon="assessment" on-tap="{{onHeatmapBtnClick}}" title="Show heatmap" active?="{{displayMode == 'heatmap'}}"></core-icon-button>          
+          <span flex id="statusMsg">{{statusMessage}}</span>
+          <core-icon-button id="solutionBtn" icon="done-all" on-tap="{{onSolutionBtnClick}}" title="Show Solution" active?="{{displayMode == 'solution'}}"></core-icon-button>
+        </core-toolbar>
+
+        <div id="aceContainer" flex>
+          <ace-element id="codeEditor" mode="{{mode}}" theme="{{theme}}" fontSize="{{fontSize}}"></ace-element>
+          <ace-highlight-manager id="aceHighlightManager" editor="{{$.codeEditor.editor}}" colors="{{$.colorPalette.palette}}" selectionColor="{{$.colorPalette.selectedColor}}"></ace-highlight-manager>
+        </div>
+      </div>
+    </div>
+    </template>
+
+  </template>
+
+</polymer-element>

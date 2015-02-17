@@ -1,0 +1,36 @@
+<link rel="import" href="../../../polymer/polymer.html">
+<link rel="import" href="../../../core-icon/core-icon.html">
+
+<polymer-element name="asq-hl-color-task" attributes="active color colorName">
+
+  <template>
+    <style>
+      :host{
+        display: block;
+        padding:10px 5px;
+        cursor: pointer;
+      }
+    </style>
+    
+    <div>
+      <core-icon id="coreIcon" icon="" aria-label="color" role="img" style="background-color: #{{color}};"></core-icon>&nbsp;<content></content>
+    </div>
+    
+    
+
+  </template>
+  <script>
+    Polymer({
+      publish:{
+        color: ""
+      },
+      activeChanged: function(){
+        var icon = this.hasAttribute('active') 
+          ? "check" 
+          : " ";
+        this.$.coreIcon.icon = icon;
+      }
+    });
+  </script>
+
+</polymer-element>

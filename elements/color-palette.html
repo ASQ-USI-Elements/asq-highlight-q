@@ -1,0 +1,145 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../core-dropdown/core-dropdown.html">
+<link rel="import" href="../../core-icon-button/core-icon-button.html">
+<link rel="import" href="../../core-icon/core-icon.html">
+<link rel="import" href="../../core-selector/core-selector.html">
+
+
+<polymer-element name="color-palette" attributes="palette selectedColor selected isActive setActive">
+
+  <template>
+    <style>
+      /* manually position the dropdown below the trigger */
+      #dropdown {
+        position: absolute;
+        top: 42px;
+        left: 2px;
+        width:112px;
+        padding: 5px;
+        background: #CFD8DC;
+      }
+
+      .color-item{
+        width:20px;
+        height:20px;
+        border:1px solid transparent;
+        cursor: pointer;
+        margin: 3px;
+      }
+      .color-item:hover{
+        border:1px solid #444;
+      }
+
+      .color-item > core-icon{
+        width:20px;
+        height: 20px;
+        display:none;
+      }
+
+      .color-item[active] > core-icon{;
+        display:block;
+      }
+    </style>
+
+    <div relative>
+      <core-icon-button id="trigger" touch-action="none">
+      </core-icon-button>
+      <core-dropdown id="dropdown" >
+        <core-selector id="colorSelector" selected="{{selected}}" layout horizontal wrap>
+          <template repeat="{{item in palette }}" flex>
+            <div class="color-item" style="background-color: #{{ item.color }}"><core-icon icon="check"></core-icon></div>
+
+          </template>
+        </core-selector>
+      </core-dropdown>
+     
+    </div>
+    
+  </template>
+
+  <script>
+      Polymer({
+        palette: [
+          {
+            "color" : 'd9534f',
+            "name" :'bootstrapred'
+          },
+          {
+            "color" : '428bca',
+            "name" : 'blue'
+          },
+          {
+            "color" : '5cb85c',
+            "name" : 'green'
+          },
+          {
+            "color" : 'f0ad4e',
+            "name" : 'orange'
+          },
+          {
+            "color" : '8b0000',
+            "name" : 'darkred'
+          },
+          {
+            "color" : 'ffd700',
+            "name" : 'gold'
+          },
+          {
+            "color" : 'bdb76b',
+            "name" : 'darkkhaki'
+          },
+          {
+            "color" : '000080',
+            "name" : 'navy'
+          },
+          {
+            "color" : 'ba55d3',
+            "name" : 'mediumorchid'
+          },
+          {
+            "color" : '90ee90',
+            "name" : 'lightgreen'
+          },
+          {
+            "color" : 'ff00ff',
+            "name" : 'magenta'
+          },
+          {
+            "color" : 'ff0000',
+            "name" : 'red'
+          }
+        ],
+        ready: function(){
+          //this will have the color of the selected color item
+          this.cIcon =  this.$.trigger.shadowRoot.querySelector('core-icon');
+
+          this.$.trigger.addEventListener("down", function(evt){
+            this.$.dropdown.toggle();
+          }.bind(this));
+
+          this.$.colorSelector.addEventListener("core-select", function(evt){
+            // we only care for selection events
+            if(! evt.detail.isSelected) return;
+            this.cIcon.style.backgroundColor = evt.detail.item.style.backgroundColor;
+            this.selectedColor = this.palette[this.$.colorSelector.selected];
+
+          }.bind(this));
+
+          this.selected = 0;
+
+        },
+        isActive: function (){
+          return  this.$.trigger.hasAttribute('active');
+        },
+        setActive: function (val){
+          if(val === true){
+            this.$.trigger.setAttribute('active', '');
+          }else if(val === false){
+            this.$.trigger.removeAttribute('active');
+          }
+          return;
+        }
+      });
+  </script>
+
+</polymer-element>

@@ -24,7 +24,7 @@
     
 
     <!-- Viewer -->
-    <template if="{{role == Roles.VIEWER}}">
+    <template if="{{role == roles.VIEWER}}">
     <div id="leContent">
       <content select=":not(code):not(asq-hl-color-task)"></content>
       <core-selector id="taskSelector" selected="{{$.colorPalette.selected}}">
@@ -55,7 +55,7 @@
     </template>
     
     <!-- Presenter -->
-    <template if="{{role == Roles.PRESENTER}}">
+    <template if="{{role == roles.PRESENTER}}">
     <div id="leContent">
       <content select=":not(code):not(asq-hl-color-task)"></content>
       <core-selector id="taskSelector" on-core-activate="{{onSelectedTaskChanged}}">

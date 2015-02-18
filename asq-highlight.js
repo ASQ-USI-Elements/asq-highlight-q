@@ -7,7 +7,7 @@
       mode: {value: 'java', reflect: true},
       theme: {value: 'textmate', reflect: true}
     },
-
+    
     created: function(){
       this.statusMessage = '';
       this.displayMode = 'heatmap';
@@ -84,7 +84,7 @@
 
     onProgress: function(evt){
       if(evt.questionUid !== this.uid) return;
-      if(this.role !== this.Roles.PRESENTER) return;
+      if(this.role !== this.roles.PRESENTER) return;
       this.updateProgress(evt.heatmapData)
     },
 
@@ -183,7 +183,7 @@
     },
 
     submit: function() {
-      if ( this.role !== this.Roles.VIEWER ) {
+      if ( this.role !== this.roles.VIEWER ) {
         return;
       }
 

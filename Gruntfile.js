@@ -27,10 +27,10 @@ module.exports = function(grunt) {
     less: {
       development: {
         files: {
-          "asq-highlight.css": "asq-highlight.less",
-          "asq-highlight-editor.css": "asq-highlight-editor.less",
+          "elements/asq-highlight-presenter/asq-highlight-presenter.css": "elements/asq-highlight-presenter/asq-highlight-presenter.less",
+          "elements/asq-highlight-viewer/asq-highlight-viewer.css": "elements/asq-highlight-viewer/asq-highlight-viewer.less",
           "elements/hl-inspector/hl-inspector.css": "elements/hl-inspector/hl-inspector.less",
-          "elements/hm-inspector/hm-inspector.css": "elements/hm-inspector/hm-inspector.less"
+          "asq-highlight-editor.css": "asq-highlight-editor.less"
         }
       },
       production: {
@@ -38,10 +38,10 @@ module.exports = function(grunt) {
           yuicompress: true
         },
         files: {
-          "asq-highlight.css": "asq-highlight.less",
-          "asq-highlight-editor.css": "asq-highlight-editor.less",
+          "elements/asq-highlight-presenter/asq-highlight-presenter.css": "elements/asq-highlight-presenter/asq-highlight-presenter.less",
+          "elements/asq-highlight-viewer/asq-highlight-viewer.css": "elements/asq-highlight-viewer/asq-highlight-viewer.less",
           "elements/hl-inspector/hl-inspector.css": "elements/hl-inspector/hl-inspector.less",
-          "elements/hm-inspector/hm-inspector.css": "elements/hm-inspector/hm-inspector.less"
+          "asq-highlight-editor.css": "asq-highlight-editor.less"
         }
       }
     },

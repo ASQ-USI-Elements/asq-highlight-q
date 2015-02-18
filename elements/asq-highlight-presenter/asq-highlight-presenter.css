@@ -1,20 +1,7 @@
-:host {
-  min-width: 100px;
-  min-height: 100px;
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-direction: normal;
-  -moz-box-direction: normal;
-  -webkit-box-orient: vertical;
-  -moz-box-orient: vertical;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-}
 ::content asq-solution {
+  display: none;
+}
+::content code {
   display: none;
 }
 /* make ace editor stretch to fill this not the parent*/
@@ -24,112 +11,12 @@
 #statusMsg {
   font-size: 14px;
 }
-#inspector {
-  min-height: 100px;
-  overflow-y: scroll;
-  background: #f8f8f8;
-}
 core-tooltip.special:hover::shadow .core-tooltip,
 core-tooltip.special:focus::shadow .core-tooltip {
   opacity: 1;
   -webkit-transition-delay: 1s;
   transition-delay: 1s;
   transform: translate3d(0px, 0px, 0px);
-}
-/* content */
-#editor-container {
-  padding-top: 15px;
-}
-#task-container {
-  margin-top: 8px;
-}
-.he-highlighted-summary {
-  font-family: "DejaVu LGC Sans Mono", "DejaVu Sans Mono", Menlo, Monaco, Consolas, "Courier New", monospace;
-}
-.he-highlighted-code {
-  margin-top: 4px;
-  background: #f5f2f0;
-  display: none;
-}
-.expanded .he-highlighted-code {
-  display: block;
-}
-.color-stripe {
-  display: table-cell;
-  padding: 5px;
-  border: 1px solid transparent;
-  border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
-}
-.he-inspector {
-  float: left;
-  height: 400px;
-  overflow-y: scroll;
-  background: #f8f8f8;
-}
-.he-editor {
-  position: relative;
-}
-.he-toolbar,
-.asq-hl-toolbar {
-  padding: 0 0 5px;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-}
-li.list-group-item:hover,
-li.list-group-item:focus {
-  background-color: #f5f5f5;
-}
-.zero-padding {
-  padding: 0;
-}
-.he-placeholder:before {
-  content: attr(data-placeholder);
-  /*position: absolute;*/
-  /*    top: 10px;*/
-  color: #a9a9a9;
-  font-style: italic;
-}
-.input-group-sm .he-task-color,
-.he-task-color {
-  padding: 5px 30px;
-}
-.he-task .input-group-btn {
-  display: none;
-}
-.he-task .input-group-sm .form-control:not(:first-child):not(:last-child) {
-  border-bottom-right-radius: 3px;
-  border-top-right-radius: 3px;
-}
-.he-task:hover .input-group .form-control:not(:first-child):not(:last-child) {
-  border-radius: 0px;
-}
-.he-task:hover .input-group-btn {
-  display: table-cell;
-}
-.he-code-toggle {
-  display: inline-block;
-  padding: .2em 10px .3em 0;
-  background: url(../img/close.png) left center no-repeat;
-  line-height: 1;
-}
-.expanded .he-code-toggle {
-  background: url(../img/open.png) left center no-repeat;
-}
-.he-code-toggle:active,
-.he-code-toggle:hover {
-  text-decoration: none;
-}
-#heatmap-ta {
-  font-family: Monaco, monospace;
-  font-size: 12px;
-}
-.he-heatmap-label-description {
-  margin-left: 10px;
-  font-weight: bold;
-}
-.he-output pre {
-  max-height: 800px;
 }
 ace-element::shadow .ace_highlight {
   position: absolute;

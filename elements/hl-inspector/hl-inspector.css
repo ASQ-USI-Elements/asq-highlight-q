@@ -6658,6 +6658,10 @@ button.he-code-toggle > core-icon[icon="arrow-drop-up"] {
 .expanded .he-highlighted-code {
   display: block;
 }
+li.list-group-item:hover,
+li.list-group-item:focus {
+  background-color: #f5f5f5;
+}
 .marker-d9534f {
   background-color: #d9534f;
 }

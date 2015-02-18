@@ -52,6 +52,9 @@ button.he-code-toggle{
   display: block;
 }
 
+li.list-group-item:hover, li.list-group-item:focus {
+background-color: #f5f5f5;
+}
 
 // selection colors
 @bootstrapred-color: #d9534f;
@@ -113,36 +116,3 @@ button.he-code-toggle{
   }
   .generate-hue-strip(@name, @color, @n, (@i + 1));
 }
-
-// .marker-bootstrapred { background-color: @bootstrapred-color;}
-// .marker-blue { background-color: @blue-color;}
-// .marker-green { background-color: @green-color;}
-// .marker-orange { background-color: @orange-color;}
-// .marker-darkred { background-color: @darkred-color;}
-// .marker-gold { background-color: @gold-color}
-// .marker-darkkhaki { background-color: @darkkhaki-color;}
-// .marker-navy { background-color: @navy-color;}
-// .marker-mediumorchid { background-color: @mediumorchid-color;}
-// .marker-lightgreen { background-color: @lightgreen-color;}
-// .marker-magenta { background-color: @magenta-color;}
-// .marker-red { background-color: @red-color;}
-
-// .generate-hue-strip(marker-bootstrapred, @bootstrapred-color , 10);
-// .generate-hue-strip(marker-blue, @blue-color , 10);
-// .generate-hue-strip(marker-green, @green-color , 10);
-// .generate-hue-strip(marker-orange, @orange-color , 10);
-// .generate-hue-strip(marker-darkred, @darkred-color , 10);
-// .generate-hue-strip(marker-gold, @gold-color , 10);
-// .generate-hue-strip(marker-darkkhaki, @darkkhaki-color , 10);
-// .generate-hue-strip(marker-navy, @navy-color , 10);
-// .generate-hue-strip(marker-mediumorchid, @mediumorchid-color , 10);
-// .generate-hue-strip(marker-lightgreen, @lightgreen-color , 10);
-// .generate-hue-strip(marker-magenta, @magenta-color , 10);
-// .generate-hue-strip(marker-red, @red-color , 10);
-
-// .generate-hue-strip(@name, @color, @n, @i: 1) when (@i =< @n) {
-//   .@{name}-@{i} {
-//     background-color: hsl(hsvhue(@color), 0.45 + ((@i - 1) * 0.4 / (@n - 1)), 0.25 + 0.65 * (1- ((@i - 1) / (@n - 1))) );
-//   }
-//   .generate-hue-strip(@name, @color, @n, (@i + 1));
-// }

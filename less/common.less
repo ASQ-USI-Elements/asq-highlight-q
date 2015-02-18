@@ -1,0 +1,67 @@
+// mixins
+@import "lib/lesshat.less";
+
+// do not show solution or code
+::content asq-solution {display: none};
+::content code {display: none};
+
+/* make ace editor stretch to fill this not the parent*/
+#aceContainer{
+  position:relative;
+}
+
+#statusMsg{
+  font-size:14px;
+}
+
+ core-tooltip.special:hover::shadow .core-tooltip,
+ core-tooltip.special:focus::shadow .core-tooltip {
+    opacity: 1;
+    -webkit-transition-delay: 1s;
+    transition-delay: 1s;
+    transform: translate3d(0px, 0px, 0px);
+  }
+
+ace-element::shadow .ace_highlight {
+    position: absolute;
+    z-index: 4;
+}
+
+@bootstrapred-color: #d9534f;
+@blue-color: #428bca;
+@green-color: #5cb85c;
+@orange-color: #f0ad4e;
+@darkred-color: #8b0000;
+@gold-color: #ffd700;
+@darkkhaki-color: #bdb76b;
+@navy-color: #000080;
+@mediumorchid-color: #ba55d3;
+@lightgreen-color: #90ee90;
+@magenta-color: #ff00ff;
+@red-color: #ff0100;
+
+@bootstrapred-name: marker-d9534f;
+@blue-name: marker-428bca;
+@green-name: marker-5cb85c;
+@orange-name: marker-f0ad4e;
+@darkred-name: marker-8b0000;
+@gold-name: marker-ffd700;
+@darkkhaki-name: marker-bdb76b;
+@navy-name: marker-000080;
+@mediumorchid-name: marker-ba55d3;
+@lightgreen-name: marker-90ee90;
+@magenta-name: marker-ff00ff;
+@red-name: marker-ff0100;
+
+ace-element::shadow .@{bootstrapred-name} { background-color: color(@bootstrapred-color);}
+ace-element::shadow .@{blue-name} { background-color: @blue-color;}
+ace-element::shadow .@{green-name} { background-color: @green-color;}
+ace-element::shadow .@{orange-name} { background-color: @orange-color;}
+ace-element::shadow .@{darkred-name} { background-color: @darkred-color;}
+ace-element::shadow .@{gold-name} { background-color: @gold-color}
+ace-element::shadow .@{darkkhaki-name} { background-color: @darkkhaki-color;}
+ace-element::shadow .@{navy-name} { background-color: @navy-color;}
+ace-element::shadow .@{mediumorchid-name} { background-color: @mediumorchid-color;}
+ace-element::shadow .@{lightgreen-name} { background-color: @lightgreen-color;}
+ace-element::shadow .@{magenta-name} { background-color: @magenta-color;}
+ace-element::shadow .@{red-name} { background-color: @red-color;}

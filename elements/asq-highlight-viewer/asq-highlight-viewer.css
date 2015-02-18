@@ -1,0 +1,65 @@
+::content asq-solution {
+  display: none;
+}
+::content code {
+  display: none;
+}
+/* make ace editor stretch to fill this not the parent*/
+#aceContainer {
+  position: relative;
+}
+#statusMsg {
+  font-size: 14px;
+}
+core-tooltip.special:hover::shadow .core-tooltip,
+core-tooltip.special:focus::shadow .core-tooltip {
+  opacity: 1;
+  -webkit-transition-delay: 1s;
+  transition-delay: 1s;
+  transform: translate3d(0px, 0px, 0px);
+}
+ace-element::shadow .ace_highlight {
+  position: absolute;
+  z-index: 4;
+}
+ace-element::shadow .marker-d9534f {
+  background-color: #d9534f;
+}
+ace-element::shadow .marker-428bca {
+  background-color: #428bca;
+}
+ace-element::shadow .marker-5cb85c {
+  background-color: #5cb85c;
+}
+ace-element::shadow .marker-f0ad4e {
+  background-color: #f0ad4e;
+}
+ace-element::shadow .marker-8b0000 {
+  background-color: #8b0000;
+}
+ace-element::shadow .marker-ffd700 {
+  background-color: #ffd700;
+}
+ace-element::shadow .marker-bdb76b {
+  background-color: #bdb76b;
+}
+ace-element::shadow .marker-000080 {
+  background-color: #000080;
+}
+ace-element::shadow .marker-ba55d3 {
+  background-color: #ba55d3;
+}
+ace-element::shadow .marker-90ee90 {
+  background-color: #90ee90;
+}
+ace-element::shadow .marker-ff00ff {
+  background-color: #ff00ff;
+}
+ace-element::shadow .marker-ff0100 {
+  background-color: #ff0100;
+}
+#inspector {
+  min-height: 100px;
+  overflow-y: scroll;
+  background: #f8f8f8;
+}

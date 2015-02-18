@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ASQ-USI/asq-microformat"
+    "url": "https://github.com/ASQ-USI/asq-highlight"
   },
   "dependencies": {
     "asq-plugin": "ASQ-USI/asq-plugin",

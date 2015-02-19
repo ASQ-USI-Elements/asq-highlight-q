@@ -1,3 +1,12 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
 <link rel="import" href="../polymer/polymer.html">
 
 <link rel="import" href="elements/asq-hl-color-task/asq-hl-color-task.html">
@@ -6,6 +15,29 @@
 <link rel="import" href="elements/asq-highlight-viewer/asq-highlight-viewer.html">
 
 <script src="asq-highlight.js"></script>
+
+<!--
+ASQ-Highlight element can be used to to create, deliver and validate highlighting exercises utilizing the [Ace editor](http://ace.c9.io). It can be used in everything that has to do with languages from Programming exercises to English grammar exercises.
+
+##### Example
+
+      <asq-highlight  theme="textmate" mode="java" role="viewer" fontSize="1em">
+        <asq-stem><h3>Highlight with the appropriate color the following:</h3></asq-stem>
+        <asq-hl-color-task color="d9534f">Visibility Modifiers</asq-hl-color-task>
+          <asq-hl-color-task color="428bca">Variable Declarations</asq-hl-color-task>
+          <asq-hl-color-task color="f0ad4e">Other keywords</asq-hl-color-task>
+        <code>public class C {      
+     public void m() {
+       int i = i + 5 + ((int)5.0) + ((int)5f);
+     }
+    }</code>
+      </asq-highlight>
+
+@element asq-highlight
+@blurb 
+@status alpha
+@homepage http://github.com/ASQ-USI/asq-highlight
+-->
 
 <polymer-element name="asq-highlight" attributes="mode theme solution fontSize">
 
@@ -44,5 +76,61 @@
     </template>
 
   </template>
+
+  <script>
+    (function(){
+  'use strict';
+
+  var p = {
+
+    publish:{
+      /**
+       * Sets the mode for the ace-editor
+       *
+       * @attribute mode
+       * @type string
+       * @default 'java'
+       */
+      mode: {value: 'java', reflect: true},
+
+      /**
+       * Sets the theme for the ace-editor
+       *
+       * @attribute theme
+       * @type string
+       * @default 'textmate'
+       */
+      theme: {value: 'textmate', reflect: true},
+
+      /**
+       * Sets the fontSize for the ace-editor
+       *
+       * @attribute fontSize
+       * @type string
+       * @default '12px'
+       */
+      fontSize: {value: '12px', reflect: true}
+    },
+
+    ready: function(){
+
+      document.addEventListener('asq-ready', function(evt){
+        try{
+          this.subscribeToEvents(evt.detail.asqEventBus);
+        }catch(err){
+          console.debug('failed to subscribeToEvents');
+        }
+      }.bind(this));
+    },
+
+    subscribeToEvents: function(eventBus){
+    }
+  }
+
+  ASQ.asqify(p, true);
+  Polymer('asq-highlight', p);
+})();
+
+  </script>
 
 </polymer-element>

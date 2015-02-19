@@ -26,6 +26,6 @@
     "bootstrap": "~3.3.1"
   },
   "devDependencies": {
-    "web-component-tester": "Polymer/web-component-tester#^2.0.0-rc1"
+    "web-component-tester": "Polymer/web-component-tester#^2.2.3"
   }
 }

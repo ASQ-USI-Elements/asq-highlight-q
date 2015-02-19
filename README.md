@@ -1,5 +1,5 @@
 ##What is it?
-ASQ-Highlight element can be used to create toolset to create, deliver and validate highlighting exercises utilizing the [Ace editor](http://ace.c9.io). It can be used in everything that has to do with languages from Programming exercises to English grammar exercises. It started as a summer project by @margaritaG and has now evolved to an editor with edit, highglight and heatmap capabilities. ASQ-Highlight can be used standalone or with ASQ.
+ASQ-Highlight element can be used to to create, deliver and validate highlighting exercises utilizing the [Ace editor](http://ace.c9.io). It can be used in everything that has to do with languages from Programming exercises to English grammar exercises. It started as a summer project by @margaritaG and has now evolved to an editor with edit, highglight and heatmap capabilities.
 
 ##Overview
 The lifecycle of a highlight question consists of:

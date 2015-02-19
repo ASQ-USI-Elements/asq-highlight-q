@@ -15,7 +15,28 @@
 <link rel="import" href="../color-palette.html">
 <link rel="import" href="../hl-inspector/hl-inspector.html">
 
-<script src="asq-highlight-viewer.js"></script>
+
+<!--
+Viewer version of asq-highlight. Normally this element is used by an `<asq-highlight>` element when it's `role` attribute is equal to `viewer`.
+
+##### Example
+
+    <asq-highlight-viewer theme="textmate" mode="java" role="presenter" fontSize="1em">
+        <asq-stem><h3>Highlight with the appropriate color the following:</h3></asq-stem>
+        <asq-hl-color-task color="d9534f">Visibility Modifiers</asq-hl-color-task>
+        <asq-hl-color-task color="428bca">Variable Declarations</asq-hl-color-task>
+        <asq-hl-color-task color="f0ad4e">Other keywords</asq-hl-color-task>
+        <code>public class C {      
+     public void m() {
+       int i = i + 5 + ((int)5.0) + ((int)5f);
+     }
+    }</code>
+    </asq-highlight-viewer>
+
+@element asq-highlight-viewer
+@status alpha
+@homepage http://github.com/ASQ-USI/asq-highlight
+-->
 
 <polymer-element name="asq-highlight-viewer" attributes="mode theme solution fontSize" flex layout vertical>
 
@@ -53,5 +74,120 @@
     </div>
 
   </template>
+<script>
+
+(function(){
+  'use strict';
+  
+  var p = {
+
+    publish:{
+      /**
+       * Sets the mode for the ace-editor
+       *
+       * @attribute mode
+       * @type string
+       * @default 'java'
+       */
+      mode: {value: 'java', reflect: true},
+
+      /**
+       * Sets the theme for the ace-editor
+       *
+       * @attribute theme
+       * @type string
+       * @default 'textmate'
+       */
+      theme: {value: 'textmate', reflect: true},
+
+      /**
+       * Sets the fontSize for the ace-editor
+       *
+       * @attribute fontSize
+       * @type string
+       * @default '12px'
+       */
+      fontSize: {value: '12px', reflect: true}
+    },
+
+
+    initAceElement: function(){
+      var code = this.$.codeContent.getDistributedNodes()[0]; 
+      if(code){
+        this.$.codeEditor.textContent = code.textContent;
+        this.$.codeEditor.initializeEditor();
+      } 
+    },
+   
+    created: function(){
+      this.palette = [];
+    },
+
+    domReady: function(){
+      this.initAceElement();
+      this.populatePalette();
+    },
+
+    ready: function(){
+
+      this.$.aceHighlightManager.mode = this.$.aceHighlightManager.MODE_HIGHLIGHT;
+
+      document.addEventListener('asq-ready', function(evt){
+        try{
+          this.subscribeToEvents(evt.detail.asqEventBus);
+        }catch(err){
+          console.debug('failed to subscribeToEvents');
+        }
+      }.bind(this));
+    },
+
+    populatePalette: function(){
+      var tasks= this.$.tasksContent.getDistributedNodes();
+      this.palette = Array.prototype.map.call(tasks, function(task){
+        return {
+          "color" : task.color,
+          "name" : task.colorName
+        }
+      }) ;
+    },
+
+    setHighlightMode: function(event, detail, sender){
+      // already active
+      if (sender.isActive()) return;
+      
+      sender.setActive(true);
+      this.$.eraseBtn.removeAttribute("active") 
+      this.$.aceHighlightManager.setHighlightMode(this.$.aceHighlightManager.HIGHLIGHT_COLOR);
+    },
+
+    setEraseMode: function(event, detail, sender){
+      // already active
+      if (sender.hasAttribute("active")) return;
+      
+      sender.setAttribute("active", ''); 
+      this.$.colorPalette.setActive(false);
+      this.$.aceHighlightManager.setHighlightMode(this.$.aceHighlightManager.HIGHLIGHT_ERASE);
+    },
+
+
+    submit: function() {
+      var submission = this.$.aceHighlightManager.getHighlightRanges();
+
+      return {
+        questionUid: this.uid,
+        timestamp: new Date(),
+        submission: submission
+      };
+    },
+
+    subscribeToEvents: function(eventBus){
+    }
+  }
+
+  ASQ.asqify(p, true);
+  Polymer('asq-highlight-viewer', p);
+})();
+
+</script>
 
 </polymer-element>

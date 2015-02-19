@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>seed-element</title>
+
+  <script src="../../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../../web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../../asq-highlight.html">
+</head>
+<body>
+
+  <asq-highlight theme="textmate" mode="java" role="presenter" fontSize="1em">
+      <asq-stem><h3>Highlight with the appropriate color the following:</h3></asq-stem>
+      <asq-hl-color-task color="d9534f" colorName="bootstrapred">Visibility Modifiers</asq-hl-color-task>
+      <asq-hl-color-task color="428bca" colorName="blue">Variable Declarations</asq-hl-color-task>
+      <asq-hl-color-task color="f0ad4e" colorName="orange">Other keywords</asq-hl-color-task>
+      <code>public class C {      
+   public void m() {
+     int i = i + 5 + ((int)5.0) + ((int)5f);
+   }
+  }</code>
+  </asq-highlight>
+
+  <script>
+    var myEl = document.querySelector('asq-highlight');
+
+    describe('<asq-highlight>', function() {
+      describe('attributes', function() {
+
+        it('should define the "theme" property', function() {
+          assert.equal(myEl.theme, 'textmate');
+        });
+
+        it('should define the "mode" property', function() {
+          assert.equal(myEl.mode, 'java');
+        });
+
+        it('should define the "role" property', function() {
+          assert.equal(myEl.role, 'presenter');
+        });
+
+        it('should define the "fontSize" property', function() {
+          assert.equal(myEl.fontSize, '1em');
+        });
+
+      });
+      
+      describe('distributed Nodes', function() {
+
+        it('should distribute all children', function() {
+          var content = myEl.shadowRoot.querySelector('content')
+          var childNodes = myEl.childNodes;
+          var distributedNodes = content.getDistributedNodes();
+          assert.equal(distributedNodes.length, childNodes.length);
+          for (var i=0,l=childNodes.length; i < l; i++){
+            assert.equal(distributedNodes[i], childNodes[i]);
+          }
+        });
+
+      });
+
+    });
+  </script>
+
+</body>
+</html>

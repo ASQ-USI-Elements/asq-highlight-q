@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>seed-element</title>
+
+  <script src="../../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../../web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../../elements/asq-highlight-presenter/asq-highlight-presenter.html">
+</head>
+<body>
+
+  <asq-highlight-presenter theme="textmate" mode="java" role="presenter" fontSize="1em">
+      <asq-stem><h3>Highlight with the appropriate color the following:</h3></asq-stem>
+      <asq-hl-color-task color="d9534f">Visibility Modifiers</asq-hl-color-task>
+      <asq-hl-color-task color="428bca">Variable Declarations</asq-hl-color-task>
+      <asq-hl-color-task color="f0ad4e">Other keywords</asq-hl-color-task>
+      <code>public class C {      
+   public void m() {
+     int i = i + 5 + ((int)5.0) + ((int)5f);
+   }
+  }</code>
+  </asq-highlight-presenter>
+
+  <script>
+    var myEl = document.querySelector('asq-highlight-presenter');
+
+    describe('<asq-highlight-presenter>', function() {
+      describe('attributes', function() {
+
+        it('should define the "theme" property', function() {
+          assert.equal(myEl.theme, 'textmate');
+        });
+
+        it('should define the "mode" property', function() {
+          assert.equal(myEl.mode, 'java');
+        });
+
+        it('should define the "role" property', function() {
+          assert.equal(myEl.role, 'presenter');
+        });
+
+        it('should define the "fontSize" property', function() {
+          assert.equal(myEl.fontSize, '1em');
+        });
+
+      });
+      
+      describe('distributed Nodes', function() {
+
+        it('should distribute code', function() {
+          var codeContent = myEl.shadowRoot.querySelector('#codeContent')
+          var distributedNodes = codeContent.getDistributedNodes();
+          var childNodes = myEl.querySelectorAll('code');
+          
+          assert.equal(distributedNodes.length, childNodes.length);
+          for (var i=0,l=childNodes.length; i < l; i++){
+            assert.equal(distributedNodes[i], childNodes[i]);
+          }
+        });
+
+        it('should distribute asq-hl-color-task', function() {
+          var taskContent = myEl.shadowRoot.querySelector('#tasksContent')
+          var distributedNodes = taskContent.getDistributedNodes();
+          var childNodes = myEl.querySelectorAll('asq-hl-color-task');
+          
+          assert.equal(distributedNodes.length, childNodes.length);
+          for (var i=0,l=childNodes.length; i < l; i++){
+            assert.equal(distributedNodes[i], childNodes[i]);
+          }
+        });
+
+        it('should distribute asq-solution', function() {
+          var solutionContent = myEl.shadowRoot.querySelector('content[select="asq-solution"]')
+          var distributedNodes = solutionContent.getDistributedNodes();
+          var childNodes = myEl.querySelectorAll('asq-solution');
+          
+          assert.equal(distributedNodes.length, childNodes.length);
+          for (var i=0,l=childNodes.length; i < l; i++){
+            assert.equal(distributedNodes[i], childNodes[i]);
+          }
+        });
+
+      });
+
+    });
+  </script>
+
+</body>
+</html>

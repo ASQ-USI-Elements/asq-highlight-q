@@ -1,7 +1,7 @@
 {
-  "name": "asq-highlight",
+  "name": "asq-highlight-q",
   "version": "0.0.0",
-  "homepage": "https://github.com/ASQ-USI/asq-highlight",
+  "homepage": "https://github.com/ASQ-USI/asq-highlight-q",
   "authors": [
     "Vasileios Triglianos <triglian@gmail.com>"
   ],
@@ -20,7 +20,7 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^0.5.1",
     "ace-element": "git@github.com:PolymerLabs/ace-element.git",
-    "asq-base": "ASQ-USI/asq-base#master",
+    "asq-base": "ASQ-USI-Elements/asq-base#master",
     "paper-elements": "Polymer/paper-elements#~0.5.1",
     "core-elements" :  "polymer/core-elements#~0.5.1",
     "bootstrap": "~3.3.1"

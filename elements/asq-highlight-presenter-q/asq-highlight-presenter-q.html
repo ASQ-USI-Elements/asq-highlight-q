@@ -15,11 +15,11 @@
 <link rel="import" href="../color-palette.html">
 
 <!--
-Presenter version of asq-highlight. Normally this element is used by an `<asq-highlight>` element when it's `role` attribute is equal to `presenter`.
+Presenter version of asq-highlight-q. Normally this element is used by an `<asq-highlight-q>` element when it's `role` attribute is equal to `presenter`.
 
 ##### Example
 
-    <asq-highlight-presenter theme="textmate" mode="java" role="presenter" fontSize="1em">
+    <asq-highlight-presenter-q theme="textmate" mode="java" role="presenter" fontSize="1em">
         <asq-stem><h3>Highlight with the appropriate color the following:</h3></asq-stem>
         <asq-hl-color-task color="d9534f">Visibility Modifiers</asq-hl-color-task>
         <asq-hl-color-task color="428bca">Variable Declarations</asq-hl-color-task>
@@ -29,18 +29,18 @@ Presenter version of asq-highlight. Normally this element is used by an `<asq-hi
        int i = i + 5 + ((int)5.0) + ((int)5f);
      }
     }</code>
-    </asq-highlight-presenter>
+    </asq-highlight-presenter-q>
 
-@element asq-highlight-presenter
+@element asq-highlight-presenter-q
 @status alpha
 @homepage http://github.com/ASQ-USI/asq-highlight
 -->
 
-<polymer-element name="asq-highlight-presenter" attributes="mode theme solution fontSize" flex layout vertical>
+<polymer-element name="asq-highlight-presenter-q" attributes="mode theme solution fontSize" flex layout vertical>
 
   <template>
 
-    <link rel="stylesheet" type="text/css" href="asq-highlight-presenter.css">
+    <link rel="stylesheet" type="text/css" href="asq-highlight-presenter-q.css">
     
     <div id="leContent">
       <content id="stemContent" select="asq-stem"></content>
@@ -264,7 +264,7 @@ Presenter version of asq-highlight. Normally this element is used by an `<asq-hi
   }
 
   ASQ.asqify(p, true);
-  Polymer('asq-highlight-presenter', p);
+  Polymer('asq-highlight-presenter-q', p);
 })();
 
 </script>

@@ -2,16 +2,16 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>asq-highlight Demo</title>
+  <title>asq-highlight-q Demo</title>
 
   <script src="../webcomponentsjs/webcomponents.js"></script>
   <link rel="import" href="../core-elements/core-elements.html">
-  <link rel="import" href="asq-highlight.html">
+  <link rel="import" href="asq-highlight-q.html">
   <style>
     body{
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
-    asq-highlight{
+    asq-highlight-q{
       height: 550px;
     }
 
@@ -28,7 +28,7 @@
 </head>
 <body unresolved>
 
-  <p><code>&lt;asq-highlight&gt; example</code>:</p>
+  <p><code>&lt;asq-highlight-q&gt; example</code>:</p>
 
   <!-- <core-menu id="modeMenu" layout horizontal> -->
     <!-- <core-item label="Edit" data-mode="modeEditText" flex></core-item> -->
@@ -36,7 +36,7 @@
     <core-item label="Teacher" data-role="teacher" flex></core-item> -->
   <!-- </core-menu> -->
         
-  <asq-highlight  theme="textmate" mode="java" role="viewer" fontSize="1em">
+  <asq-highlight-q  theme="textmate" mode="java" role="viewer" fontSize="1em">
     <asq-stem><h3 style=" margin:10px; 0;">Highlight with the appropriate color the following:</h3></asq-stem>
     <asq-hl-color-task color="d9534f">Visibility Modifiers</asq-hl-color-task>
       <asq-hl-color-task color="428bca">Variable Declarations</asq-hl-color-task>
@@ -46,9 +46,9 @@
    int i = i + 5 + ((int)5.0);
  }
 }</code>
-  </asq-highlight>
+  </asq-highlight-q>
 
-<asq-highlight  theme="textmate" mode="java" role="presenter" fontSize="1em">
+<asq-highlight-q  theme="textmate" mode="java" role="presenter" fontSize="1em">
     <asq-stem><h3 style=" margin:10px; 0;">Highlight with the appropriate color the following:</h3></asq-stem>
     <asq-hl-color-task color="d9534f" colorName="bootstrapred">Visibility Modifiers</asq-hl-color-task>
     <asq-hl-color-task color="428bca" colorName="blue">Variable Declarations</asq-hl-color-task>
@@ -58,10 +58,10 @@
    int i = i + 5 + ((int)5.0);
  }
 }</code>
-</asq-highlight>
+</asq-highlight-q>
 <script>
   var menu = document.getElementById('modeMenu');
-  var hl = document.querySelector('asq-highlight');
+  var hl = document.querySelector('asq-highlight-q');
   // menu.addEventListener("core-select", function(evt){
   //    // we only care for selection events
   //    if(! evt.detail.isSelected) return;

@@ -11,17 +11,17 @@
 
 <link rel="import" href="elements/asq-hl-color-task/asq-hl-color-task.html">
 <link rel="import" href="../asq-solution/asq-solution.html">
-<link rel="import" href="elements/asq-highlight-presenter/asq-highlight-presenter.html">
-<link rel="import" href="elements/asq-highlight-viewer/asq-highlight-viewer.html">
+<link rel="import" href="elements/asq-highlight-presenter-q/asq-highlight-presenter-q.html">
+<link rel="import" href="elements/asq-highlight-viewer-q/asq-highlight-viewer-q.html">
 
-<script src="asq-highlight.js"></script>
+<script src="asq-highlight-q.js"></script>
 
 <!--
 ASQ-Highlight element can be used to to create, deliver and validate highlighting exercises utilizing the [Ace editor](http://ace.c9.io). It can be used in everything that has to do with languages from Programming exercises to English grammar exercises.
 
 ##### Example
 
-      <asq-highlight  theme="textmate" mode="java" role="viewer" fontSize="1em">
+      <asq-highlight-q  theme="textmate" mode="java" role="viewer" fontSize="1em">
         <asq-stem><h3>Highlight with the appropriate color the following:</h3></asq-stem>
         <asq-hl-color-task color="d9534f">Visibility Modifiers</asq-hl-color-task>
           <asq-hl-color-task color="428bca">Variable Declarations</asq-hl-color-task>
@@ -31,15 +31,15 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
        int i = i + 5 + ((int)5.0) + ((int)5f);
      }
     }</code>
-      </asq-highlight>
+      </asq-highlight-q>
 
-@element asq-highlight
+@element asq-highlight-q
 @blurb 
 @status alpha
-@homepage http://github.com/ASQ-USI/asq-highlight
+@homepage http://github.com/ASQ-USI/asq-highlight-q
 -->
 
-<polymer-element name="asq-highlight" attributes="mode theme solution fontSize">
+<polymer-element name="asq-highlight-q" attributes="mode theme solution fontSize">
 
   <template>
 
@@ -63,16 +63,16 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
 
     <!-- Viewer -->
     <template if="{{role == roles.VIEWER}}">
-      <asq-highlight-viewer mode="{{mode}}" theme="{{theme}}" fontSize="{{fontSize}}">
+      <asq-highlight-viewer-q mode="{{mode}}" theme="{{theme}}" fontSize="{{fontSize}}">
         <content></content>
-      </asq-highlight-viewer>
+      </asq-highlight-viewer-q>
     </template>
     
     <!-- Presenter -->
    <template if="{{role == roles.PRESENTER}}">
-      <asq-highlight-presenter mode="{{mode}}" theme="{{theme}}" fontSize="{{fontSize}}">
+      <asq-highlight-presenter-q mode="{{mode}}" theme="{{theme}}" fontSize="{{fontSize}}">
         <content></content>
-      </asq-highlight-presenter>
+      </asq-highlight-presenter-q>
     </template>
 
   </template>
@@ -125,9 +125,9 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
 
     submit: function(){
       if(this.role == this.roles.VIEWER){
-        var el = this.shadowRoot.querySelector('asq-highlight-viewer');
+        var el = this.shadowRoot.querySelector('asq-highlight-viewer-q');
         if(!el){
-          throw new Error('submit(): expected asq-highlight-viewer element to exist');
+          throw new Error('submit(): expected asq-highlight-viewer-q element to exist');
         }
         var submission =  el.submit();
         submission.questionUid = this.uid;
@@ -140,7 +140,7 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
   }
 
   ASQ.asqify(p, true);
-  Polymer('asq-highlight', p);
+  Polymer('asq-highlight-q', p);
 })();
 
   </script>

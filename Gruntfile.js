@@ -27,8 +27,8 @@ module.exports = function(grunt) {
     less: {
       development: {
         files: {
-          "elements/asq-highlight-presenter/asq-highlight-presenter.css": "elements/asq-highlight-presenter/asq-highlight-presenter.less",
-          "elements/asq-highlight-viewer/asq-highlight-viewer.css": "elements/asq-highlight-viewer/asq-highlight-viewer.less",
+          "elements/asq-highlight-presenter-q/asq-highlight-presenter-q.css": "elements/asq-highlight-presenter-q/asq-highlight-presenter-q.less",
+          "elements/asq-highlight-viewer-q/asq-highlight-viewer-q.css": "elements/asq-highlight-viewer-q/asq-highlight-viewer-q.less",
           "elements/hl-inspector/hl-inspector.css": "elements/hl-inspector/hl-inspector.less",
           "asq-highlight-editor.css": "asq-highlight-editor.less"
         }
@@ -38,8 +38,8 @@ module.exports = function(grunt) {
           yuicompress: true
         },
         files: {
-          "elements/asq-highlight-presenter/asq-highlight-presenter.css": "elements/asq-highlight-presenter/asq-highlight-presenter.less",
-          "elements/asq-highlight-viewer/asq-highlight-viewer.css": "elements/asq-highlight-viewer/asq-highlight-viewer.less",
+          "elements/asq-highlight-presenter-q/asq-highlight-presenter-q.css": "elements/asq-highlight-presenter-q/asq-highlight-presenter-q.less",
+          "elements/asq-highlight-viewer-q/asq-highlight-viewer-q.css": "elements/asq-highlight-viewer-q/asq-highlight-viewer-q.less",
           "elements/hl-inspector/hl-inspector.css": "elements/hl-inspector/hl-inspector.less",
           "asq-highlight-editor.css": "asq-highlight-editor.less"
         }

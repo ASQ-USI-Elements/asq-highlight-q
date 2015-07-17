@@ -17,11 +17,11 @@
 
 
 <!--
-Viewer version of asq-highlight. Normally this element is used by an `<asq-highlight>` element when it's `role` attribute is equal to `viewer`.
+Viewer version of asq-highlight-q. Normally this element is used by an `<asq-highlight-q>` element when it's `role` attribute is equal to `viewer`.
 
 ##### Example
 
-    <asq-highlight-viewer theme="textmate" mode="java" role="presenter" fontSize="1em">
+    <asq-highlight-viewer-q theme="textmate" mode="java" role="presenter" fontSize="1em">
         <asq-stem><h3>Highlight with the appropriate color the following:</h3></asq-stem>
         <asq-hl-color-task color="d9534f">Visibility Modifiers</asq-hl-color-task>
         <asq-hl-color-task color="428bca">Variable Declarations</asq-hl-color-task>
@@ -31,18 +31,18 @@ Viewer version of asq-highlight. Normally this element is used by an `<asq-highl
        int i = i + 5 + ((int)5.0) + ((int)5f);
      }
     }</code>
-    </asq-highlight-viewer>
+    </asq-highlight-viewer-q>
 
-@element asq-highlight-viewer
+@element asq-highlight-viewer-q
 @status alpha
 @homepage http://github.com/ASQ-USI/asq-highlight
 -->
 
-<polymer-element name="asq-highlight-viewer" attributes="mode theme solution fontSize" flex layout vertical>
+<polymer-element name="asq-highlight-viewer-q" attributes="mode theme solution fontSize" flex layout vertical>
 
   <template>
 
-    <link rel="stylesheet" type="text/css" href="asq-highlight-viewer.css">
+    <link rel="stylesheet" type="text/css" href="asq-highlight-viewer-q.css">
     
     <div id="leContent">
       <content id="stemContent" select="asq-stem"></content>
@@ -186,7 +186,7 @@ Viewer version of asq-highlight. Normally this element is used by an `<asq-highl
   }
 
   ASQ.asqify(p, true);
-  Polymer('asq-highlight-viewer', p);
+  Polymer('asq-highlight-viewer-q', p);
 })();
 
 </script>

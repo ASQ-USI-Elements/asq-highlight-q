@@ -1,5 +1,5 @@
 ##What is it?
-ASQ-Highlight element can be used to to create, deliver and validate highlighting exercises utilizing the [Ace editor](http://ace.c9.io). It can be used in everything that has to do with languages from Programming exercises to English grammar exercises. It started as a summer project by @margaritaG and has now evolved to an editor with edit, highglight and heatmap capabilities.
+`<asq-highlight-q>` element can be used to to create, deliver and validate highlighting exercises utilizing an [Ace editor](http://ace.c9.io). It can be used in everything that has to do with languages from Programming exercises to English grammar exercises. It started as a summer project by @margaritaG and has now evolved to an editor with edit, highglight and heatmap capabilities.
 
 ##Overview
 The lifecycle of a highlight question consists of:
@@ -11,13 +11,13 @@ The lifecycle of a highlight question consists of:
 ASQ-Highlight comprises three main components:
 
 * __highlight manager:__ The manager interfaces with the ace editor API and implements the highlighting functionality.
-*  __microformat:__ The definition for the ``asq-highlight`` question type that can be plugged into ASQ and interfaces with the highlight manager.  
+*  __highlight:__ The definition for the ``asq-highlight`` question type that can be plugged into ASQ and interfaces with the highlight manager.  
 *  __editor:__ Used to create highlight questions, also interfaces with the highlgiht manager.
 
 ##Developer
 Run the main ``grunt``task to get started:
 ```
-> cd asq-microformat
+> cd asq-highlight-q
 > npm install
 > grunt
 ```
@@ -26,7 +26,7 @@ The default task builds dust templates, less stylesheets and javascript and will
 ##Editor
 To run the  highlight editor locally:
 ```
-> cd asq-microformat
+> cd asq-highlight-q
 > npm install
 > cd ./editor
 > node server.js

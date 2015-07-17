@@ -8,11 +8,11 @@
   <script src="../../../webcomponentsjs/webcomponents.min.js"></script>
   <script src="../../../web-component-tester/browser.js"></script>
 
-  <link rel="import" href="../../asq-highlight.html">
+  <link rel="import" href="../../asq-highlight-q.html">
 </head>
 <body>
 
-  <asq-highlight theme="textmate" mode="java" role="presenter" fontSize="1em">
+  <asq-highlight-q theme="textmate" mode="java" role="presenter" fontSize="1em">
       <asq-stem><h3>Highlight with the appropriate color the following:</h3></asq-stem>
       <asq-hl-color-task color="d9534f" colorName="bootstrapred">Visibility Modifiers</asq-hl-color-task>
       <asq-hl-color-task color="428bca" colorName="blue">Variable Declarations</asq-hl-color-task>
@@ -22,12 +22,12 @@
      int i = i + 5 + ((int)5.0) + ((int)5f);
    }
   }</code>
-  </asq-highlight>
+  </asq-highlight-q>
 
   <script>
-    var myEl = document.querySelector('asq-highlight');
+    var myEl = document.querySelector('asq-highlight-q');
 
-    describe('<asq-highlight>', function() {
+    describe('<asq-highlight-q>', function() {
       describe('attributes', function() {
 
         it('should define the "theme" property', function() {

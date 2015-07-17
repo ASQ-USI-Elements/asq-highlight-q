@@ -8,11 +8,11 @@
   <script src="../../../webcomponentsjs/webcomponents.min.js"></script>
   <script src="../../../web-component-tester/browser.js"></script>
 
-  <link rel="import" href="../../elements/asq-highlight-presenter/asq-highlight-presenter.html">
+  <link rel="import" href="../../elements/asq-highlight-viewer-q/asq-highlight-viewer-q.html">
 </head>
 <body>
 
-  <asq-highlight-presenter theme="textmate" mode="java" role="presenter" fontSize="1em">
+  <asq-highlight-viewer-q theme="textmate" mode="java" role="presenter" fontSize="1em">
       <asq-stem><h3>Highlight with the appropriate color the following:</h3></asq-stem>
       <asq-hl-color-task color="d9534f">Visibility Modifiers</asq-hl-color-task>
       <asq-hl-color-task color="428bca">Variable Declarations</asq-hl-color-task>
@@ -22,16 +22,16 @@
      int i = i + 5 + ((int)5.0) + ((int)5f);
    }
   }</code>
-  </asq-highlight-presenter>
+  </asq-highlight-viewer-q>
 
   <script>
-    var myEl = document.querySelector('asq-highlight-presenter');
+    var myEl = document.querySelector('asq-highlight-viewer-q');
 
     function getChildNumber(node) {
       return Array.prototype.indexOf.call(node.parentNode.childNodes, node);
     }
 
-    describe('<asq-highlight-presenter>', function() {
+    describe('<asq-highlight-viewer-q>', function() {
       describe('attributes', function() {
 
         it('should define the "theme" property', function() {
@@ -77,8 +77,8 @@
         });
 
         it('should distribute asq-hl-color-task', function() {
-          var tasksContent = myEl.shadowRoot.querySelector('#tasksContent');
-          var distributedNodes = tasksContent.getDistributedNodes();
+          var taskContent = myEl.shadowRoot.querySelector('#tasksContent');
+          var distributedNodes = taskContent.getDistributedNodes();
           var childNodes = myEl.querySelectorAll('asq-hl-color-task');
           
           assert.equal(distributedNodes.length, childNodes.length);

@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('./lib/asqHighlightPlugin');
+module.exports = require('./lib/asqHighlightQuestionPlugin');

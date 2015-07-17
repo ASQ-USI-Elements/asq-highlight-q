@@ -123,6 +123,18 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
       }.bind(this));
     },
 
+    submit: function(){
+      if(this.role == this.roles.VIEWER){
+        var el = this.shadowRoot.querySelector('asq-highlight-viewer');
+        if(!el){
+          throw new Error('submit(): expected asq-highlight-viewer element to exist');
+        }
+        var submission =  el.submit();
+        submission.questionUid = this.uid;
+        return submission;
+      }
+    },
+
     subscribeToEvents: function(eventBus){
     }
   }

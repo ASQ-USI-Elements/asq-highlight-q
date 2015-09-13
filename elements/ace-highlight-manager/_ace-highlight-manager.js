@@ -6,9 +6,50 @@ var Heatmap = require('../../src/Heatmap')
 var Range = ace.require('ace/range').Range
 	, comparePoints = Range.comparePoints;
 
-	Polymer('ace-highlight-manager', {
+	Polymer({
+		is:'ace-highlight-manager', 
 
-		created: function(){
+		properties:{
+			editor:{
+				type: Object,
+				value: function(){return null;},
+				observer: '_editorChanged',
+				notify: true
+			},
+			mode:{
+				type: String,
+				value: "modeHeatmap",
+				observer: '_modeChanged',
+				notify: true
+			},
+			colors:{
+				type: Array,
+				value: function(){return []},
+				notify: true
+			},
+			selectionColor:{
+				type: Object,
+				value: function(){return null;},
+				notify: true
+			},
+			rangeItems:{
+				type: Array,
+				value: function(){return []},
+				notify: true
+			},
+			occurenceItems:{
+				type: Array,
+				value: function(){return []},
+				notify: true
+			},
+			heatmapItems:{
+				type: Array,
+				value: function(){return []},
+				notify: true
+			}
+		},
+
+		ready: function(){
 			 // editor
 			 this.MODE_HIGHLIGHT = 'modeHighlight';
 			 this.MODE_EDIT_TEXT = 'modeEditText';
@@ -18,7 +59,6 @@ var Range = ace.require('ace/range').Range
 			 this.mode = 'modeHeatmap';
 
 			 this.defaultOptions = {
-			   syntax: 'java',
 			   mode: this.MODE_HEATMAP
 			 };
 
@@ -43,9 +83,6 @@ var Range = ace.require('ace/range').Range
 			   "name" : 'green'
 			 }];
 
-			 this.rangeItems = [];
-			 this.occurenceItems = [];
-			 this.heatmapItems = [];
 			 this.heatmapData = {};
 			 this.aceEditSession = null;
 			 this.selectionColor = this.colors[0];
@@ -53,15 +90,13 @@ var Range = ace.require('ace/range').Range
 			 this.oldstart = null;
 			 this.lastMarker = null;
 			 this.rangeIdPrefix = 'he-range-item-';
+
+			 if(this.editor){
+			 	this.init();
+			 }
 		},
 
-		ready: function(){
-			if(this.editor){
-				this.init();
-			}
-		},
-
-		editorChanged: function(){
+		_editorChanged: function(){
 			if(this.editor){
 				// TODO: clean previous work
 				this.init();
@@ -77,9 +112,7 @@ var Range = ace.require('ace/range').Range
 	    this.onChangeSelectionBinded = this.onChangeSelection.bind(this);
 	    
 	    ///setup ace editor
-	    this.aceEditSession = this.editor.getSession()
-	    this.aceEditSession.setMode('ace/mode/'+this.settings.syntax.toLowerCase());
-
+	    this.aceEditSession = this.editor.getSession();
 	    this.modes[this.mode]();
 		},
 
@@ -186,9 +219,9 @@ var Range = ace.require('ace/range').Range
 	    return occurences;
 	  },
 
-	  modeChanged: function(oldValue, newValue){
+	  _modeChanged: function(newValue, oldValue){
 	  	if(oldValue === newValue) return;
-	    if(this.modes[newValue]){
+	    if(this.modes && this.modes[newValue]){
 	      this.modes[newValue]();
 	    }
 	  },
@@ -349,7 +382,6 @@ var Range = ace.require('ace/range').Range
 	       * * `-1`: (B) begins before (A) but ends inside of (A)<br/>
 	       * * `+1`: (B) begins inside of (A) but ends outside of (A)<br/>
 	       * * `42`: FTW state: (B) ends in (A) but starts outside of (A) */
-	        console.log("The comparison says" + range.compareRange(eraserRange))
 	        switch(range.compareRange(eraserRange)){
 	          case -1:
 	              range.start.row = eraserRange.end.row;
@@ -417,7 +449,7 @@ var Range = ace.require('ace/range').Range
 	      text: text,
 	      occurences: count
 	    }
-	    this.occurenceItems.push(occurenceItemObj);
+	    this.push('occurenceItems', occurenceItemObj);
 	  },
 
 	  addRangeItem: function(marker, id, color) {
@@ -434,7 +466,7 @@ var Range = ace.require('ace/range').Range
 	      range: rangeString
 	    }
 
-	    this.rangeItems.push(rangeItemObj);
+	    this.push('rangeItems',rangeItemObj);
 	  },
 
 	  updateRangeItemTextByMarkerId: function(id, text){
@@ -452,10 +484,13 @@ var Range = ace.require('ace/range').Range
 	  	var items = this.rangeItems;
 	  	for (var i=0, l= items.length; i<l; i++){
 	  		if(items[i].id ==  this.rangeIdPrefix+id){
-	  			items.splice(i, 1);
+	  			this.splice('rangeItems', i, 1);
+			  	//update Occurence Items
+			  	this.populateOccurenceItems();
 	  			return;
 	  		}
 	  	}
+
 	  },
 
 	  addHeatmapItem: function(hue){
@@ -466,7 +501,7 @@ var Range = ace.require('ace/range').Range
 	      description: hue
 	    }
 
-	    this.heatmapItems.push(heatmapItemObj);
+	    this.push('heatmapItems', heatmapItemObj);
 	  },
 
 	  updateHeatmapData: function(ranges){

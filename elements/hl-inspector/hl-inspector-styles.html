@@ -1,3 +1,7 @@
+<dom-module id="hl-inspector-styles">
+  <template>
+    <style>
+
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -6621,14 +6625,8 @@ button.close {
     display: none !important;
   }
 }
-paper-tabs {
-  color: #333;
-}
 paper-tabs paper-tab {
   cursor: pointer;
-}
-paper-tabs::shadow #selectionBar {
-  background-color: #333;
 }
 paper-tab[active] {
   background: #fff;
@@ -6638,13 +6636,13 @@ button.he-code-toggle {
   border: none;
   outline: none;
 }
-button.he-code-toggle > core-icon[icon="arrow-drop-up"] {
+button.he-code-toggle > iron-icon[icon="arrow-drop-up"] {
   display: none;
 }
-.expanded button.he-code-toggle > core-icon[icon="arrow-drop-down"] {
+.expanded button.he-code-toggle > iron-icon[icon="arrow-drop-down"] {
   display: none;
 }
-.expanded button.he-code-toggle > core-icon[icon="arrow-drop-up"] {
+.expanded button.he-code-toggle > iron-icon[icon="arrow-drop-up"] {
   display: inline-block;
 }
 .he-highlighted-summary {
@@ -7058,3 +7056,7 @@ li.list-group-item:focus {
 .marker-ff0100-10 {
   background-color: #760a0a;
 }
+
+    </style>
+  </template>
+</dom-module

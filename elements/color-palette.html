@@ -1,22 +1,25 @@
 <link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../core-dropdown/core-dropdown.html">
-<link rel="import" href="../../core-icon-button/core-icon-button.html">
-<link rel="import" href="../../core-icon/core-icon.html">
-<link rel="import" href="../../core-selector/core-selector.html">
+<link rel="import" href="../../iron-dropdown/iron-dropdown.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-selector/iron-selector.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 
-
-<polymer-element name="color-palette" attributes="palette selectedColor selected isActive setActive">
-
+<dom-module id="color-palette">
   <template>
+
     <style>
       /* manually position the dropdown below the trigger */
       #dropdown {
-        position: absolute;
-        top: 42px;
-        left: 2px;
+      /*  position: absolute;*/
         width:112px;
         padding: 5px;
         background: #CFD8DC;
+      }
+
+      #colorSelector{
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
       }
 
       .color-item{
@@ -30,116 +33,138 @@
         border:1px solid #444;
       }
 
-      .color-item > core-icon{
+      .color-item > iron-icon{
         width:20px;
         height: 20px;
         display:none;
       }
 
-      .color-item[active] > core-icon{;
+      .color-item[active] > iron-icon{;
         display:block;
       }
     </style>
 
-    <div relative>
-      <core-icon-button id="trigger" touch-action="none">
-      </core-icon-button>
-      <core-dropdown id="dropdown" >
-        <core-selector id="colorSelector" selected="{{selected}}" layout horizontal wrap>
-          <template repeat="{{item in palette }}" flex>
-            <div class="color-item" style="background-color: #{{ item.color }}"><core-icon icon="check"></core-icon></div>
+    <div style="position: relative">
+      <paper-icon-button id="trigger" touch-action="none" on-tap="_toggleDropdown">
+      </paper-icon-button>
+      <iron-dropdown id="dropdown" vertical-offset="42" horizontal-offset="2">
+        <iron-selector class="dropdown-content" id="colorSelector" selected="{{selected}}" on-iron-select="_onColorSelected">
+          <template is="dom-repeat" items="{{palette}}" as="item">
+            <div class="color-item" style$="{{computeStyle(item)}}"><iron-icon icon="check"></iron-icon></div>
 
           </template>
-        </core-selector>
-      </core-dropdown>
+        </iron-selector>
+      </iron-dropdown>
      
     </div>
     
   </template>
-
   <script>
-      Polymer({
-        palette: [
-          {
-            "color" : 'd9534f',
-            "name" :'bootstrapred'
+    Polymer({
+      is: 'color-palette',
+      properties: {
+        palette: {
+          type: Array,
+          value: function () {
+            return [
+              {
+                'color': 'd9534f',
+                'name': 'bootstrapred'
+              },
+              {
+                'color': '428bca',
+                'name': 'blue'
+              },
+              {
+                'color': '5cb85c',
+                'name': 'green'
+              },
+              {
+                'color': 'f0ad4e',
+                'name': 'orange'
+              },
+              {
+                'color': '8b0000',
+                'name': 'darkred'
+              },
+              {
+                'color': 'ffd700',
+                'name': 'gold'
+              },
+              {
+                'color': 'bdb76b',
+                'name': 'darkkhaki'
+              },
+              {
+                'color': '000080',
+                'name': 'navy'
+              },
+              {
+                'color': 'ba55d3',
+                'name': 'mediumorchid'
+              },
+              {
+                'color': '90ee90',
+                'name': 'lightgreen'
+              },
+              {
+                'color': 'ff00ff',
+                'name': 'magenta'
+              },
+              {
+                'color': 'ff0000',
+                'name': 'red'
+              }
+            ];
           },
-          {
-            "color" : '428bca',
-            "name" : 'blue'
-          },
-          {
-            "color" : '5cb85c',
-            "name" : 'green'
-          },
-          {
-            "color" : 'f0ad4e',
-            "name" : 'orange'
-          },
-          {
-            "color" : '8b0000',
-            "name" : 'darkred'
-          },
-          {
-            "color" : 'ffd700',
-            "name" : 'gold'
-          },
-          {
-            "color" : 'bdb76b',
-            "name" : 'darkkhaki'
-          },
-          {
-            "color" : '000080',
-            "name" : 'navy'
-          },
-          {
-            "color" : 'ba55d3',
-            "name" : 'mediumorchid'
-          },
-          {
-            "color" : '90ee90',
-            "name" : 'lightgreen'
-          },
-          {
-            "color" : 'ff00ff',
-            "name" : 'magenta'
-          },
-          {
-            "color" : 'ff0000',
-            "name" : 'red'
-          }
-        ],
-        ready: function(){
-          //this will have the color of the selected color item
-          this.cIcon =  this.$.trigger.shadowRoot.querySelector('core-icon');
-
-          this.$.trigger.addEventListener("down", function(evt){
-            this.$.dropdown.toggle();
-          }.bind(this));
-
-          this.$.colorSelector.addEventListener("core-select", function(evt){
-            // we only care for selection events
-            if(! evt.detail.isSelected) return;
-            this.cIcon.style.backgroundColor = evt.detail.item.style.backgroundColor;
-            this.selectedColor = this.palette[this.$.colorSelector.selected];
-
-          }.bind(this));
-
-          this.selected = 0;
-
+          notify: true
         },
-        isActive: function (){
-          return  this.$.trigger.hasAttribute('active');
+        selected: { 
+          type: "String",
+          value: '0',
+          notify: true 
         },
-        setActive: function (val){
-          if(val === true){
-            this.$.trigger.setAttribute('active', '');
-          }else if(val === false){
-            this.$.trigger.removeAttribute('active');
-          }
-          return;
+        selectedColor: { 
+          type: "Object",
+          value: function(){return undefined;},
+          notify: true 
         }
-      });
-  </script>
+      },
 
-</polymer-element>
+      attached: function () {
+        //this will have the color of the selected color item
+        this.cIcon = Polymer.dom(this.$.trigger.root).querySelector('iron-icon');
+        if(this.selected){
+          this.selectedColor = this.palette[this.selected];
+          this.cIcon.style.backgroundColor = '#'+ this.selectedColor.color;
+        }
+      },
+
+      _toggleDropdown: function(){
+        this.$.dropdown.toggle();
+      },
+
+      _onColorSelected: function(event, detail){
+        this.cIcon.style.backgroundColor = detail.item.style.backgroundColor;
+        this.selectedColor = this.palette[this.selected];
+      },
+
+      computeStyle: function (item) {
+        return 'background-color: #' + item.color;
+      },
+
+      isActive: function (){
+        return  this.$.trigger.hasAttribute('active');
+      },
+
+      setActive: function (val){
+        if(val === true){
+          this.$.trigger.setAttribute('active', '');
+        }else if(val === false){
+          this.$.trigger.removeAttribute('active');
+        }
+        return;
+      }
+    });
+  </script>
+</dom-module>

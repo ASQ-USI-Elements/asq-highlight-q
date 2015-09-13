@@ -1,7 +1,11 @@
-::content asq-solution {
+<dom-module id="asq-highlight-viewer-q-styles">
+  <template>
+    <style>
+
+#leContent > ::content asq-solution {
   display: none;
 }
-::content code {
+#leContent > ::content code {
   display: none;
 }
 /* make ace editor stretch to fill this not the parent*/
@@ -11,8 +15,8 @@
 #statusMsg {
   font-size: 14px;
 }
-core-tooltip.special:hover::shadow .core-tooltip,
-core-tooltip.special:focus::shadow .core-tooltip {
+paper-tooltip.special:hover::shadow .paper-tooltip,
+paper-tooltip.special:focus::shadow .paper-tooltip {
   opacity: 1;
   -webkit-transition-delay: 1s;
   transition-delay: 1s;
@@ -58,8 +62,7 @@ ace-element::shadow .marker-ff00ff {
 ace-element::shadow .marker-ff0100 {
   background-color: #ff0100;
 }
-#inspector {
-  min-height: 100px;
-  overflow-y: scroll;
-  background: #f8f8f8;
-}
+
+    </style>
+  </template>
+</dom-module

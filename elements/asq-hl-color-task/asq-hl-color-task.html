@@ -1,36 +1,43 @@
 <link rel="import" href="../../../polymer/polymer.html">
-<link rel="import" href="../../../core-icon/core-icon.html">
+<link rel="import" href="../../../iron-icons/iron-icons.html">
+<link rel="import" href="../../../iron-icon/iron-icon.html">
 
-<polymer-element name="asq-hl-color-task" attributes="active color colorName">
-
-  <template>
-    <style>
+<dom-module id="asq-hl-color-task">
+  <style>
       :host{
         display: block;
         padding:4px 5px;
         cursor: pointer;
       }
     </style>
+  <template>
     
     <div>
-      <core-icon id="coreIcon" icon="" aria-label="color" role="img" style="background-color: #{{color}};"></core-icon>&nbsp;<content></content>
+      <iron-icon id="leIcon" icon="" aria-label="color" role="img" style$="{{_computeStyle(color)}}"></iron-icon>&nbsp;<content></content>
     </div>
-    
-    
-
   </template>
   <script>
     Polymer({
-      publish:{
-        color: ""
+      is: 'asq-hl-color-task',
+      properties: {
+        active: {
+          notify: true,
+          observer: '_activeChanged'
+        },
+        color: {
+          type: String,
+          value: '',
+          notify: true
+        },
+        colorName: { notify: true }
       },
-      activeChanged: function(){
-        var icon = this.hasAttribute('active') 
-          ? "check" 
-          : " ";
-        this.$.coreIcon.icon = icon;
+      _activeChanged: function () {
+        var icon = this.hasAttribute('active') ? 'check' : ' ';
+        this.$.leIcon.icon = icon;
+      },
+      _computeStyle: function (color) {
+        return 'background-color: #' + color + ';';
       }
     });
   </script>
-
-</polymer-element>
+</dom-module>

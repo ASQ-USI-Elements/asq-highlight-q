@@ -2,8 +2,8 @@
 @import "lib/lesshat.less";
 
 // do not show solution or code
-::content asq-solution {display: none};
-::content code {display: none};
+#leContent > ::content asq-solution {display: none};
+#leContent > ::content code {display: none};
 
 /* make ace editor stretch to fill this not the parent*/
 #aceContainer{
@@ -14,8 +14,8 @@
   font-size:14px;
 }
 
- core-tooltip.special:hover::shadow .core-tooltip,
- core-tooltip.special:focus::shadow .core-tooltip {
+ paper-tooltip.special:hover::shadow .paper-tooltip,
+ paper-tooltip.special:focus::shadow .paper-tooltip {
     opacity: 1;
     -webkit-transition-delay: 1s;
     transition-delay: 1s;

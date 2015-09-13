@@ -4,16 +4,8 @@
 //boostrap
 @import "../../../bootstrap/less/bootstrap.less"; 
 
-paper-tabs {
-  color: #333;
-}
-
 paper-tabs paper-tab{
   cursor: pointer;
-}
-
-paper-tabs::shadow #selectionBar {
-  background-color: #333;
 }
 
 paper-tab[active]{
@@ -25,17 +17,17 @@ button.he-code-toggle{
   border:none;
   outline:none;
 
-  > core-icon[icon="arrow-drop-up"] {
+  > iron-icon[icon="arrow-drop-up"] {
     display:none;
   }
 }
 
 .expanded button.he-code-toggle{
-  > core-icon[icon="arrow-drop-down"] {
+  > iron-icon[icon="arrow-drop-down"] {
     display:none;
   }
 
-  > core-icon[icon="arrow-drop-up"] {
+  > iron-icon[icon="arrow-drop-up"] {
     display:inline-block;
   }
 } 

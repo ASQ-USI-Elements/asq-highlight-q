@@ -1,18 +1,19 @@
 <link rel="import" href="../../../polymer/polymer.html">
-
 <link rel="import" href="../../../ace-element/ace-element.html">
-<link rel="import" href="../../../core-icon-button/core-icon-button.html">
-<link rel="import" href="../../../core-icons/editor-icons.html">
-<link rel="import" href="../../../core-selector/core-selector.html">
-<link rel="import" href="../../../core-toolbar/core-toolbar.html">
+<link rel="import" href="../../../iron-icons/editor-icons.html">
+<link rel="import" href="../../../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../iron-selector/iron-selector.html">
+<link rel="import" href="../../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../paper-toolbar/paper-toolbar.html">
 
 <link rel="import" href="../../../asq-base/asq-base.html">
 <link rel="import" href="../../../asq-stem/asq-stem.html">
-<link rel="import" href="../../../asq-solution/asq-solution.html">
+<!-- <link rel="import" href="../../../asq-solution/asq-solution.html"> -->
 
 <link rel="import" href="../ace-highlight-manager/ace-highlight-manager.html">
 <link rel="import" href="../asq-hl-color-task/asq-hl-color-task.html">
 <link rel="import" href="../color-palette.html">
+<link rel="import" href="./asq-highlight-presenter-q-styles.html">
 
 <!--
 Presenter version of asq-highlight-q. Normally this element is used by an `<asq-highlight-q>` element when it's `role` attribute is equal to `presenter`.
@@ -36,237 +37,472 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
 @homepage http://github.com/ASQ-USI/asq-highlight
 -->
 
-<polymer-element name="asq-highlight-presenter-q" attributes="mode theme solution fontSize" flex layout vertical>
+<dom-module id="asq-highlight-presenter-q">
 
   <template>
+    <style include="asq-highlight-presenter-q-styles"></style>
+    <style>
+      :host{
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        --paper-toolbar-background: #CFD8DC;
+        --paper-toolbar-color: #000;  
+      }
 
-    <link rel="stylesheet" type="text/css" href="asq-highlight-presenter-q.css">
-    
+      #container{
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+      }
+
+      #aceContainer{
+        @apply(--layout-flex);
+      }
+
+      #statusMsg{
+         @apply(--layout-flex);
+      }
+
+      #inspector {
+        min-height: 100px;
+        overflow-y: scroll;
+        background: #f8f8f8;
+        @apply(--layout-flex);
+      }
+    </style>
     <div id="leContent">
       <content id="stemContent" select="asq-stem"></content>
       <content id="codeContent" select="code"></content>
-      <core-selector id="taskSelector" on-core-activate="{{onSelectedTaskChanged}}">
+      <iron-selector id="taskSelector" on-iron-select="_onSelectedTaskChanged" on-iron-deselect="_onSelectedTaskChanged" selected-attribute="active">
         <content id="tasksContent" select="asq-hl-color-task"></content>
-      </core-selector>
+      </iron-selector>
       <content select="asq-solution"></content>
       <content></content>
     </div>
 
-    <div id="container" flex layout horizontal>
-      <div layout vertical flex>
+    <div id="container">
+      <div class="layout vertical flex">
 
-        <core-toolbar>
-          <core-icon-button id="heatmapBtn" icon="assessment" on-tap="{{onHeatmapBtnClick}}" title="Show heatmap" active?="{{displayMode == 'heatmap'}}"></core-icon-button>          
-          <span flex id="statusMsg">{{statusMessage}}</span>
-          <core-icon-button id="solutionBtn" icon="done-all" on-tap="{{onSolutionBtnClick}}" title="Show Solution" active?="{{displayMode == 'solution'}}"></core-icon-button>
-        </core-toolbar>
+        <paper-toolbar>
+          <paper-icon-button id="heatmapBtn" icon="assessment" on-tap="_onHeatmapBtnTap" title="Show heatmap" active$="{{_isInHeatmapMode(displayMode)}}"></paper-icon-button>          
+          <span id="statusMsg">{{statusMessage}}</span>
+          <paper-icon-button id="solutionBtn" icon="done-all" on-tap="_onSolutionBtnTap" title="Show Solution" active$="{{_isInSolutionMode(displayMode)}}"></paper-icon-button>
+        </paper-toolbar>
 
-        <div id="aceContainer" flex>
-          <ace-element id="codeEditor" mode="{{mode}}" theme="{{theme}}" fontSize="{{fontSize}}"></ace-element>
-          <ace-highlight-manager id="aceHighlightManager" editor="{{$.codeEditor.editor}}" colors="{{$.colorPalette.palette}}" selectionColor="{{$.colorPalette.selectedColor}}"></ace-highlight-manager>
+        <div id="aceContainer">
+          <ace-element id="codeEditor" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" wrap="{{wrap}}">{{value}}</ace-element>
+          <ace-highlight-manager id="aceHighlightManager" colors="{{palette}}" selection-color="{{colorPaletteSelectedColor}}"></ace-highlight-manager>
         </div>
       </div>
     </div>
 
   </template>
+  <script>
+    (function () {
+      'use strict';
+      Polymer({
+        is: 'asq-highlight-presenter-q',
+        properties: {
+          
+          disabled: {
+            type: Boolean,
+            value: false,
+            notify: true,
+            reflectToAttribute: true
+          },
 
-<script>
-(function(){
-  'use strict';
-  
-  var p = {
+          /**
+           * The fontSize property of the ace-element.
+           */
+          fontSize: { 
+            type: String,
+            value: "12px",
+            notify: true,
+            reflectToAttribute: true
+          },
 
-    publish:{
-      /**
-       * Sets the mode for the ace-editor
-       *
-       * @attribute mode
-       * @type string
-       * @default 'java'
-       */
-      mode: {value: 'java', reflect: true},
+          /**
+           * The mode property of the ace-element.
+           */
+          mode: {
+            type: String,
+            value: 'javascript',
+            reflectToAttribute: true,
+            notify: true
+          },
 
-      /**
-       * Sets the theme for the ace-editor
-       *
-       * @attribute theme
-       * @type string
-       * @default 'textmate'
-       */
-      theme: {value: 'textmate', reflect: true},
+          /**
+           * The tabSize property of the ace-element.
+           */
+          tabSize: { 
+            type: Number,
+            value: 2,
+            notify: true,
+            reflectToAttribute: true,
+          },
 
-      /**
-       * Sets the fontSize for the ace-editor
-       *
-       * @attribute fontSize
-       * @type string
-       * @default '12px'
-       */
-      fontSize: {value: '12px', reflect: true}
-    },
+          /**
+           * The theme property of the ace-element.
+           */
+          theme: {
+            type: String,
+            value: 'monokai',
+            notify: true,
+            reflectToAttribute: true,
+          },
 
-    initAceElement: function(){
-      var code = this.$.codeContent.getDistributedNodes()[0]; 
-      if(code){
-        this.$.codeEditor.textContent = code.textContent;
-        this.$.codeEditor.initializeEditor();
-      } 
-    },
-   
-    created: function(){
-      this.statusMessage = '';
-      this.displayMode = 'heatmap';
-      this.palette = [];
-    },
 
-    domReady: function(){
-      this.initAceElement();
-      this.populatePalette();
-    },
+          /**
+           * The value property of the ace-element.
+           */
+          value: {
+            type: String,
+            value: null,
+            notify: true,
+            reflectToAttribute: true,
+          },
 
-    ready: function(){
+          /**
+           * The wrap property of the ace-element.
+           */
+          wrap: {
+            type: Boolean,
+            value: false,
+            notify: true,
+            reflectToAttribute: true,
+          },
 
-      this.$.aceHighlightManager.mode = this.$.aceHighlightManager.MODE_HEATMAP
+          solution: { notify: true },
 
-      document.addEventListener('asq-ready', function(evt){
-        try{
-          this.subscribeToEvents(evt.detail.asqEventBus);
-        }catch(err){
-          console.debug('failed to subscribeToEvents');
-        }
-      }.bind(this));
-    },
+          displayMode: {
+            type: String,
+            value: 'heatmap',
+            notify: true,
+            observer: '_displayModeChanged',
+            reflectToAttribute: true,
+          },
 
-    populatePalette: function(){
-      var tasks= this.$.tasksContent.getDistributedNodes();
-      this.palette = Array.prototype.map.call(tasks, function(task){
-        return {
-          "color" : task.color,
-          "name" : task.colorName
-        }
-      }) ;
-    },
+          statusMessage: {
+            type: String,
+            value: '',
+            notify: true,
+            reflectToAttribute: true,
+          },
 
-    displayModeChanged: function(oldVal, newVal){
-      if (newVal =='heatmap'){
-        this.$.taskSelector.multi = false;
-        this.showHeatmap();
-
-      }else if (newVal =='solution'){
-        this.$.taskSelector.multi = true;
-        this.showSolution();
-      }
-    },
-
-    onQuestionType: function(evt){
-      if(evt && evt.questionType && evt.questionType == this.tagName.toLowerCase()){
-        if(evt.type == "progress"){
-          this.onProgress(evt);
-        }
-      }
-    },
-
-    onProgress: function(evt){
-      if(evt.questionUid !== this.uid) return;
-      if(this.role !== this.roles.PRESENTER) return;
-      this.updateProgress(evt.heatmapData)
-    },
-
-    updateProgress: function(heatmapData){
-      this.$.aceHighlightManager.updateHeatmapData(heatmapData)
-    },
-
-    onHeatmapBtnClick: function(event, detail, sender){
-      this.displayMode = "heatmap";
-    },
-
-    onSolutionBtnClick: function(event, detail, sender){
-      this.displayMode = "solution";
-    },
-
-    showHeatmap: function(){
-      this.updateProgress([{"d9534f":[{"start":{"row":"0","column":"0"},"end":{"row":"0","column":"6"},"id":"42"},{"start":{"row":"1","column":"2"},"end":{"row":"1","column":"8"},"id":"48"}]},{"d9534f":[{"start":{"row":"0","column":"0"},"end":{"row":"0","column":"6"},"id":"42"}]},{"f0ad4e":[{"start":{"row":2,"column":4},"end":{"row":2,"column":7},"id":8}]},{"f0ad4e":[{"start":{"row":2,"column":4},"end":{"row":2,"column":7},"id":8},{"start":{"row":2,"column":22},"end":{"row":2,"column":25},"id":13},{"start":{"row":2,"column":35},"end":{"row":2,"column":38},"id":19}]  }]);
-      
-      var selectedItem = this.$.taskSelector.selectedItem;
-
-      if(! selectedItem) return;
-
-      this.statusMessage = "Heatmap for " + selectedItem.textContent;
-
-      try{
-        this.$.aceHighlightManager.drawHeatmap(selectedItem.color)
-      }catch(err){
-        // maybe there's just no data
-        if(err.message && err.message.match(/no heatmatData found for hue/)){
-        }else{
-          throw(err);
-        }
-      }
-    },
-
-    showSolution: function(event, detail, sender){
-      var solution = {"d9534f":[{"start":{"row":0,"column":0},"end":{"row":0,"column":6},"id":8},{"start":{"row":1,"column":1},"end":{"row":1,"column":7},"id":15}],"428bca":[{"start":{"row":2,"column":3},"end":{"row":2,"column":6},"id":21}],"f0ad4e":[{"start":{"row":0,"column":7},"end":{"row":0,"column":12},"id":30},{"start":{"row":1,"column":8},"end":{"row":1,"column":12},"id":37},{"start":{"row":2,"column":21},"end":{"row":2,"column":24},"id":44},{"start":{"row":2,"column":34},"end":{"row":2,"column":37},"id":50}]};
-      var appliedSolution = {};
-      this.statusMessage = "Solution for";
-
-      // since taskSelector has a `multi` attribute for solution mode
-      // selectedItem is an array
-      var selectedItem = this.$.taskSelector.selectedItem;
-
-      if(!selectedItem){
-        selectedItem = [];
-      }
-
-      if(! (selectedItem instanceof Array)){
-        selectedItem = [selectedItem];
-      }
-
-      if(selectedItem.length){
-        var colors = selectedItem.map(function(item, idx){
-          if(idx == 0){
-            this.statusMessage += ' '
+          /**
+           * The color palette
+           */
+          palette: {
+            type: Array,
+            value: function(){return []},
+            notify: true
           }
-          else if(idx < (selectedItem.length - 1)){
-             this.statusMessage += ', '
-          }else{
-            this.statusMessage += ' and '
+        },
+
+        ready: function () {
+          this.$.aceHighlightManager.mode = this.$.aceHighlightManager.MODE_HEATMAP;
+          document.addEventListener('asq-ready', function (evt) {
+            try {
+              this.subscribeToEvents(evt.detail.asqEventBus);
+            } catch (err) {
+              console.debug('failed to subscribeToEvents');
+            }
+          }.bind(this));
+          this._populatePalette();
+
+          //initialize highlight manager
+          // fixme: the reason for the timeout is that ace-element changes it's editor property internally. maybe expose it as areadonly
+          setTimeout(function(){
+            this.$.aceHighlightManager.editor = this.$.codeEditor.editor; 
+          }.bind(this),100)
+        },
+
+        _populatePalette: function () {
+          var tasks = this.$.tasksContent.getDistributedNodes();
+          this.palette = Array.prototype.map.call(tasks, function (task) {
+            return {
+              'color': task.color,
+              'name': task.colorName
+            };
+          });
+        },
+
+        _displayModeChanged: function (newVal, oldVal) {
+          if (newVal == 'heatmap') {
+            this.$.taskSelector.multi = false;
+            this._showHeatmap();
+          } else if (newVal == 'solution') {
+            this.$.taskSelector.multi = true;
+            this._showSolution();
           }
+        },
 
-          this.statusMessage += item.textContent;
-          return item.color;
-        }.bind(this));
-        colors.forEach(function(c){
-          if(solution.hasOwnProperty(c)){
-            appliedSolution[c] = solution[c].slice();
+        _onQuestionType: function (evt) {
+          if (evt && evt.questionType && evt.questionType == this.tagName.toLowerCase()) {
+            if (evt.type == 'progress') {
+              this._onProgress(evt);
+            }
           }
-        })
-      }else{
-        appliedSolution = solution;
-        this.statusMessage = "Solution for all";
-      }      
+        },
 
-      this.$.aceHighlightManager.drawSolution(appliedSolution);
-    },
+        _onProgress: function (evt) {
+          if (evt.questionUid !== this.uid)
+            return;
+          if (this.role !== this.roles.PRESENTER)
+            return;
+          this.updateProgress(evt.heatmapData);
+        },
 
-    subscribeToEvents: function(eventBus){
-      eventBus.on('asq:question_type', this.onQuestionType.bind(this))
-    },
+        _updateProgress: function (heatmapData) {
+          this.$.aceHighlightManager.updateHeatmapData(heatmapData);
+        },
 
-    onSelectedTaskChanged: function(event, detail, sender){
+        _onHeatmapBtnTap: function (event, detail, sender) {
+          this.displayMode = 'heatmap';
+        },
 
-      if(this.displayMode == 'heatmap'){
-        this.showHeatmap();
-      }else if(this.displayMode == 'solution'){
-        this.showSolution();
-      }
-     
-    }
-  }
+        _onSolutionBtnTap: function (event, detail, sender) {
+          this.displayMode = 'solution';
+        },
 
-  ASQ.asqify(p, true);
-  Polymer('asq-highlight-presenter-q', p);
-})();
+        _showHeatmap: function () {
+          this._updateProgress([
+            {
+              'd9534f': [
+                {
+                  'start': {
+                    'row': '0',
+                    'column': '0'
+                  },
+                  'end': {
+                    'row': '0',
+                    'column': '6'
+                  },
+                  'id': '42'
+                },
+                {
+                  'start': {
+                    'row': '1',
+                    'column': '2'
+                  },
+                  'end': {
+                    'row': '1',
+                    'column': '8'
+                  },
+                  'id': '48'
+                }
+              ]
+            },
+            {
+              'd9534f': [{
+                  'start': {
+                    'row': '0',
+                    'column': '0'
+                  },
+                  'end': {
+                    'row': '0',
+                    'column': '6'
+                  },
+                  'id': '42'
+                }]
+            },
+            {
+              'f0ad4e': [{
+                  'start': {
+                    'row': 2,
+                    'column': 4
+                  },
+                  'end': {
+                    'row': 2,
+                    'column': 7
+                  },
+                  'id': 8
+                }]
+            },
+            {
+              'f0ad4e': [
+                {
+                  'start': {
+                    'row': 2,
+                    'column': 4
+                  },
+                  'end': {
+                    'row': 2,
+                    'column': 7
+                  },
+                  'id': 8
+                },
+                {
+                  'start': {
+                    'row': 2,
+                    'column': 22
+                  },
+                  'end': {
+                    'row': 2,
+                    'column': 25
+                  },
+                  'id': 13
+                },
+                {
+                  'start': {
+                    'row': 2,
+                    'column': 35
+                  },
+                  'end': {
+                    'row': 2,
+                    'column': 38
+                  },
+                  'id': 19
+                }
+              ]
+            }
+          ]);
+          var selectedItem = this.$.taskSelector.selectedItem;
+          if (!selectedItem)
+            return;
+          this.statusMessage = 'Heatmap for ' + selectedItem.textContent;
+          try {
+            this.$.aceHighlightManager.drawHeatmap(selectedItem.color);
+          } catch (err) {
+            // maybe there's just no data
+            if (err.message && err.message.match(/no heatmatData found for hue/)) {
+            } else {
+              throw err;
+            }
+          }
+        },
+        _showSolution: function (event, detail, sender) {
+          var solution = {
+            'd9534f': [
+              {
+                'start': {
+                  'row': 0,
+                  'column': 0
+                },
+                'end': {
+                  'row': 0,
+                  'column': 6
+                },
+                'id': 8
+              },
+              {
+                'start': {
+                  'row': 1,
+                  'column': 1
+                },
+                'end': {
+                  'row': 1,
+                  'column': 7
+                },
+                'id': 15
+              }
+            ],
+            '428bca': [{
+                'start': {
+                  'row': 2,
+                  'column': 3
+                },
+                'end': {
+                  'row': 2,
+                  'column': 6
+                },
+                'id': 21
+              }],
+            'f0ad4e': [
+              {
+                'start': {
+                  'row': 0,
+                  'column': 7
+                },
+                'end': {
+                  'row': 0,
+                  'column': 12
+                },
+                'id': 30
+              },
+              {
+                'start': {
+                  'row': 1,
+                  'column': 8
+                },
+                'end': {
+                  'row': 1,
+                  'column': 12
+                },
+                'id': 37
+              },
+              {
+                'start': {
+                  'row': 2,
+                  'column': 21
+                },
+                'end': {
+                  'row': 2,
+                  'column': 24
+                },
+                'id': 44
+              },
+              {
+                'start': {
+                  'row': 2,
+                  'column': 34
+                },
+                'end': {
+                  'row': 2,
+                  'column': 37
+                },
+                'id': 50
+              }
+            ]
+          };
+          var appliedSolution = {};
+          this.statusMessage = 'Solution for';
 
-</script>
+          var selectedItems = this.$.taskSelector.selectedItems;
 
-</polymer-element>
+          if (selectedItems) {
+            var colors = selectedItems.map(function (item, idx) {
+              if (idx == 0) {
+                this.statusMessage += ' ';
+              } else if (idx < selectedItems.length - 1) {
+                this.statusMessage += ', ';
+              } else {
+                this.statusMessage += ' and ';
+              }
+              this.statusMessage += item.textContent;
+              return item.color;
+            }.bind(this));
+            colors.forEach(function (c) {
+              if (solution.hasOwnProperty(c)) {
+                appliedSolution[c] = solution[c].slice();
+              }
+            });
+          } else {
+            appliedSolution = solution;
+            this.statusMessage = 'Solution for all';
+          }
+          this.$.aceHighlightManager.drawSolution(appliedSolution);
+        },
+
+        subscribeToEvents: function (eventBus) {
+          eventBus.on('asq:question_type', this._onQuestionType.bind(this));
+        },
+
+        _onSelectedTaskChanged: function (event, detail) {
+          if (this.displayMode == 'heatmap') {
+            this._showHeatmap();
+          } else if (this.displayMode == 'solution') {
+            this._showSolution();
+          }
+        },
+
+        _isInHeatmapMode: function (displayMode) {
+          return displayMode == 'heatmap';
+        },
+
+        _isInSolutionMode: function (displayMode) {
+          return displayMode == 'solution';
+        }
+      });
+    }());
+  </script>
+</dom-module>

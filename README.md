@@ -1,10 +1,10 @@
 ##What is it?
-`<asq-highlight-q>` element can be used to to create, deliver and validate highlighting exercises utilizing an [Ace editor](http://ace.c9.io). It can be used in everything that has to do with languages from Programming exercises to English grammar exercises. It started as a summer project by @margaritaG and has now evolved to an editor with edit, highglight and heatmap capabilities.
+`<asq-highlight-q>` element can be used to to create, deliver and validate highlighting exercises utilizing an [Ace editor](http://ace.c9.io). It can be used in everything that has to do with languages from Programming exercises to English grammar exercises. It started as a summer project by @margaritaG and has now evolved to an editor with edit, highglight and heatmap capabilities. 
 
 ##Overview
 The lifecycle of a highlight question consists of:
 
-* __authoring:__ Use the  [highlight editor](http://asq.inf.usi.ch/microformat/highlight-editor/) to create a question with highlighting tasks.Copy the resulting microformat snippet to your presentation and upload it on ASQ.
+* __authoring:__ Use the  [asq-highlight-q editor](http://asq.inf.usi.ch/elements/asq-highlight-q-editor/editor.html) to create a question with highlighting tasks.Copy the resulting microformat snippet to your presentation and upload it on ASQ.
 * __Presentation:__ During presentation students answer highlight questions while the results can be visualized on the instructors machine with a heatmap. 
 
 #Architecture
@@ -21,13 +21,4 @@ Run the main ``grunt``task to get started:
 > npm install
 > grunt
 ```
-The default task builds dust templates, less stylesheets and javascript and will watch for any changes in these source files rebuilding them as necessary.
-
-##Editor
-To run the  highlight editor locally:
-```
-> cd asq-highlight-q
-> npm install
-> cd ./editor
-> node server.js
-```
+The default task builds dust templates, `less` stylesheets and JavaScript and will watch for any changes in these source files rebuilding them as necessary.

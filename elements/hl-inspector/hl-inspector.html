@@ -1,28 +1,47 @@
 <link rel="import" href="../../../polymer/polymer.html">
 <link rel="import" href="../../../paper-tabs/paper-tabs.html">
-<link rel="import" href="../../../paper-tabs/paper-tab.html"
-<link rel="import" href="../../../core-icon/core-icon.html">
-<link rel="import" href="../../../core-pages/core-pages.html">
+<link rel="import" href="../../../paper-tabs/paper-tab.html" <link="">
+<link rel="import" href="../../../iron-pages/iron-pages.html">
+<link rel="import" href="../../../iron-flex-layout/iron-flex-layout.html">
 
-<polymer-element name="hl-inspector" attributes="selected rangeItems occurenceItems">
+<link rel="import" href="./hl-inspector-styles.html">
 
+<dom-module id="hl-inspector">
   <template>
-    <link rel="stylesheet" type="text/css" href="hl-inspector.css">
+    <style>
 
-     <paper-tabs selected="{{selected}}" noink="" role="tablist" horizontal="" center="" layout="">     
-          <paper-tab role="tab" inline="" flex="" center-center="" horizontal="" layout="" class="core-selected" active="">Ranges</paper-tab>
-          <paper-tab role="tab" inline="" flex="" center-center="" horizontal="" layout="">Occurences</paper-tab>            
+      :host{
+        --paper-tabs-selection-bar-color: #333;
+      }
+
+      paper-tabs{
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+
+      paper-tab{
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+        @apply(--layout-inline);
+        @apply(--layout-flex);
+      }
+    </style>
+    <style include="hl-inspector-styles"></style>
+
+     <paper-tabs selected="{{selected}}" selected-attribute="active" noink role="tablist">     
+          <paper-tab role="tab">Ranges</paper-tab>
+          <paper-tab role="tab">Occurences</paper-tab>            
         </paper-tabs>
 
-        <core-pages selected="{{selected}}">
+        <iron-pages selected="{{selected}}">
 
           <div>
-            <template repeat="{{r in rangeItems}}">
-              <li class="collapsed list-group-item" id="{{r.id}}" on-dblclick="{{expandClick}}">
+            <template is="dom-repeat" items="{{rangeItems}}" as="r">
+              <li class="collapsed list-group-item" id="{{r.id}}" on-dblclick="expandClick">
                 <!-- <span class="label label-default {{r.colorClass}}">&nbsp;</span> -->
-                <core-icon id="coreIcon" icon="" aria-label="color" role="img" class="{{r.colorClass}}"></core-icon>
-                <button class="he-code-toggle" on-tap="{{expandClick}}">
-                  <core-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></core-icon><core-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></core-icon>
+                <iron-icon id="coreIcon" icon="" aria-label="color" role="img" class$="{{r.colorClass}}"></iron-icon>
+                <button class="he-code-toggle" on-tap="expandClick">
+                  <iron-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></iron-icon><iron-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></iron-icon>
                 </button>                
                 <code class="he-highlighted-summary">{{r.summary}}</code>
                 <span class="badge">{{r.range}}</span>
@@ -32,38 +51,58 @@
           </div>
 
           <div>
-            <template repeat="{{o in occurenceItems}}">
-              <li class="collapsed list-group-item" on-dblclick="{{expandClick}}">
-                <button class="he-code-toggle" on-tap="{{expandClick}}">
-                  <core-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></core-icon><core-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></core-icon>
+            <template is="dom-repeat" items="{{occurenceItems}}" as="o">
+              <li class="collapsed list-group-item" on-dblclick="expandClick">
+                <button class="he-code-toggle" on-tap="expandClick">
+                  <iron-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></iron-icon><iron-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></iron-icon>
                 </button>            
                 <code class="he-highlighted-summary">{{o.summary}}</code>
-                <span class="badge {{o.colorClass}}">{{o.occurences}}</span>
+                <span class$="{{computeClass(o)}}">{{o.occurences}}</span>
                 <pre class="he-highlighted-code"><code>{{o.text}}</code></pre>
               </li>
             </template>
           </div>
-        </core-pages>
+        </iron-pages>
         
-    </div>
+    
 
   </template>
   <script>
     Polymer({
-      created:function(){
+      is: 'hl-inspector',
+
+      properties: {
+        occurenceItems: { 
+          type: Array,
+          value: function(){return[]},
+          notify: true
+        },
+        rangeItems: { 
+          type: Array,
+          value: function(){return[]},
+          notify: true
+        },
+        selected: { notify: true }
+      },
+
+      ready: function () {
         this.selected = 0;
         this.rangeItems = [];
         this.occurenceItems = [];
       },
-      expandClick: function(evt, detail, sender){
+
+      expandClick: function (evt, detail) {
         evt.preventDefault();
-        var nodeToToggle = sender;
-        if(sender.tagName == "BUTTON"){
-          nodeToToggle = sender.parentNode;
+        var nodeToToggle = event.currentTarget;
+        if (nodeToToggle.tagName == 'BUTTON') {
+          nodeToToggle = nodeToToggle.parentNode;
         }
-        nodeToToggle.classList.toggle('expanded')
+        nodeToToggle.classList.toggle('expanded');
+      },
+
+      computeClass: function (o) {
+        return 'badge ' + o.colorClass;
       }
     });
   </script>
-
-</polymer-element>
+</dom-module>

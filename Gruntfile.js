@@ -19,7 +19,6 @@ module.exports = function(grunt) {
           filename: "ace-highlight-manager.js"
         },
         watch: true
-        // keepalive: true
       }
     },
 
@@ -27,10 +26,9 @@ module.exports = function(grunt) {
     less: {
       development: {
         files: {
-          "elements/asq-highlight-presenter-q/asq-highlight-presenter-q.css": "elements/asq-highlight-presenter-q/asq-highlight-presenter-q.less",
-          "elements/asq-highlight-viewer-q/asq-highlight-viewer-q.css": "elements/asq-highlight-viewer-q/asq-highlight-viewer-q.less",
-          "elements/hl-inspector/hl-inspector.css": "elements/hl-inspector/hl-inspector.less",
-          "asq-highlight-editor.css": "asq-highlight-editor.less"
+          "elements/asq-highlight-presenter-q/asq-highlight-presenter-q-styles.html": "elements/asq-highlight-presenter-q/asq-highlight-presenter-q.less",
+          "elements/asq-highlight-viewer-q/asq-highlight-viewer-q-styles.html": "elements/asq-highlight-viewer-q/asq-highlight-viewer-q.less",
+          "elements/hl-inspector/hl-inspector-styles.html": "elements/hl-inspector/hl-inspector.less"
         }
       },
       production: {
@@ -38,11 +36,46 @@ module.exports = function(grunt) {
           yuicompress: true
         },
         files: {
-          "elements/asq-highlight-presenter-q/asq-highlight-presenter-q.css": "elements/asq-highlight-presenter-q/asq-highlight-presenter-q.less",
-          "elements/asq-highlight-viewer-q/asq-highlight-viewer-q.css": "elements/asq-highlight-viewer-q/asq-highlight-viewer-q.less",
-          "elements/hl-inspector/hl-inspector.css": "elements/hl-inspector/hl-inspector.less",
-          "asq-highlight-editor.css": "asq-highlight-editor.less"
+          "elements/asq-highlight-presenter-q/asq-highlight-presenter-q-styles.html": "elements/asq-highlight-presenter-q/asq-highlight-presenter-q.less",
+          "elements/asq-highlight-viewer-q/asq-highlight-viewer-q-styles.html": "elements/asq-highlight-viewer-q/asq-highlight-viewer-q.less",
+          "elements/hl-inspector/hl-inspector-styles.html": "elements/hl-inspector/hl-inspector.less"
         }
+      }
+    },
+
+    //concat
+    concat: {
+      options: {
+        footer: '\n    </style>\n' +
+                '  </template>\n' +
+                '</dom-module'
+      },
+      css_presenter: {
+        options:{
+          banner: '<dom-module id="asq-highlight-presenter-q-styles">\n' +
+                  '  <template>\n' +
+                  '    <style>\n\n'
+        },
+        src: ['elements/asq-highlight-presenter-q/asq-highlight-presenter-q-styles.html'],
+        dest: 'elements/asq-highlight-presenter-q/asq-highlight-presenter-q-styles.html',
+      },
+      css_viewer: {
+        options:{
+          banner: '<dom-module id="asq-highlight-viewer-q-styles">\n' +
+                  '  <template>\n' +
+                  '    <style>\n\n'
+        },
+        src: ['elements/asq-highlight-viewer-q/asq-highlight-viewer-q-styles.html'],
+        dest: 'elements/asq-highlight-viewer-q/asq-highlight-viewer-q-styles.html',
+      },
+      css_hl_inspector: {
+        options:{
+          banner: '<dom-module id="hl-inspector-styles">\n' +
+                  '  <template>\n' +
+                  '    <style>\n\n'
+        },
+        src: ['elements/hl-inspector/hl-inspector-styles.html'],
+        dest: 'elements/hl-inspector/hl-inspector-styles.html',
       }
     },
 
@@ -55,12 +88,12 @@ module.exports = function(grunt) {
         files: ['./**/*.js', '!./**/ace-highlight-manager.js'],
         tasks: ["webpack:element"],
         options: {
-          interrupt: true
+          interrupt: true 
         }
       },
       less: {
         files: ['./**/*.less'],
-        tasks: ['less:development'],
+        tasks: ['less:development', 'concat'],
         options: {
           livereload: true,
           interrupt: true

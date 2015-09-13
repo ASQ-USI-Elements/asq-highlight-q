@@ -1,20 +1,21 @@
 <link rel="import" href="../../../polymer/polymer.html">
-
 <link rel="import" href="../../../ace-element/ace-element.html">
-<link rel="import" href="../../../core-icon-button/core-icon-button.html">
-<link rel="import" href="../../../core-icons/editor-icons.html">
-<link rel="import" href="../../../core-selector/core-selector.html">
-<link rel="import" href="../../../core-toolbar/core-toolbar.html">
+<link rel="import" href="../../../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../../../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../iron-icons/editor-icons.html">
+<link rel="import" href="../../../iron-selector/iron-selector.html">
+<link rel="import" href="../../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../paper-toolbar/paper-toolbar.html">
 
 <link rel="import" href="../../../asq-base/asq-base.html">
 <link rel="import" href="../../../asq-stem/asq-stem.html">
-<link rel="import" href="../../../asq-solution/asq-solution.html">
+<!-- <link rel="import" href="../../../asq-solution/asq-solution.html"> -->
 
 <link rel="import" href="../ace-highlight-manager/ace-highlight-manager.html">
 <link rel="import" href="../asq-hl-color-task/asq-hl-color-task.html">
 <link rel="import" href="../color-palette.html">
 <link rel="import" href="../hl-inspector/hl-inspector.html">
-
+<link rel="import" href="./asq-highlight-viewer-q-styles.html">
 
 <!--
 Viewer version of asq-highlight-q. Normally this element is used by an `<asq-highlight-q>` element when it's `role` attribute is equal to `viewer`.
@@ -38,157 +39,223 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
 @homepage http://github.com/ASQ-USI/asq-highlight
 -->
 
-<polymer-element name="asq-highlight-viewer-q" attributes="mode theme solution fontSize" flex layout vertical>
-
+<dom-module id="asq-highlight-viewer-q">
   <template>
+    <style include="asq-highlight-viewer-q-styles"></style>
+    <style>
+      :host{
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        --paper-toolbar-background: #CFD8DC;
+        --paper-toolbar-color: #000;  
+      }
 
-    <link rel="stylesheet" type="text/css" href="asq-highlight-viewer-q.css">
-    
+      #container{
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+      }
+
+      #aceContainer{
+        @apply(--layout-flex);
+      }
+
+      #inspector {
+        min-height: 100px;
+        overflow-y: scroll;
+        background: #f8f8f8;
+        @apply(--layout-flex);
+      }
+    </style>
     <div id="leContent">
       <content id="stemContent" select="asq-stem"></content>
       <content id="codeContent" select="code"></content>
-      <core-selector id="taskSelector" selected="{{$.colorPalette.selected}}">
+      <iron-selector id="taskSelector" selected="{{colorPaletteSelected}}" selected-attribute="active" on-iron-select="_onTaskSelect" >
         <content id="tasksContent" select="asq-hl-color-task"></content>
-      </core-selector>
+      </iron-selector>
       <content select="asq-solution"></content>
       <content></content>
     </div>
+  
+    <div id="container">
+      <div class="layout vertical flex">
 
-    <div id="container" flex layout horizontal>
-      <div layout vertical flex>
+        <paper-toolbar>        
+          <color-palette id="colorPalette" selected="{{colorPaletteSelected}}" on-down="_setHighlightMode" palette="{{palette}}" selected-color="{{colorPaletteSelectedColor}}"></color-palette>
+          <paper-icon-button id="eraseBtn" icon="editor:format-color-reset" title="Erase mode" on-tap="_setEraseMode"></paper-icon-button>
+          <span id="statusMsg">Working on "<span>{{currentTaskDescription}}</span>"</span>
+        </paper-toolbar>
 
-        <core-toolbar>        
-          <color-palette id="colorPalette" on-down="{{setHighlightMode}}" palette="{{palette}}"></color-palette>
-          <core-icon-button id="eraseBtn" icon="editor:format-color-reset" title="Erase mode" on-tap="{{setEraseMode}}"></core-icon-button>
-          <span id="statusMsg">Working on "{{$.taskSelector.selectedItem.textContent}}"</span>
-        </core-toolbar>
-
-        <div id="aceContainer" flex>
-          <ace-element id="codeEditor" mode="{{mode}}" theme="{{theme}}" fontSize="{{fontSize}}"></ace-element>
-          <ace-highlight-manager id="aceHighlightManager" editor="{{$.codeEditor.editor}}" colors="{{palette}}" selectionColor="{{$.colorPalette.selectedColor}}"></ace-highlight-manager>
+        <div id="aceContainer">
+          <ace-element id="codeEditor" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" wrap="{{wrap}}">{{value}}</ace-element>
+          <ace-highlight-manager id="aceHighlightManager" colors="{{palette}}" selection-color="{{colorPaletteSelectedColor}}" range-items="{{aceHighlightManagerRangeItems}}" occurence-items="{{aceHighlightManagerOccurenceItems}}"></ace-highlight-manager>
         </div>
 
       </div>
       
-      <hl-inspector id='inspector' rangeItems="{{$.aceHighlightManager.rangeItems}}" occurenceItems="{{$.aceHighlightManager.occurenceItems}}" flex></hl-inspector>
+      <hl-inspector id="inspector" range-items="{{aceHighlightManagerRangeItems}}" occurence-items="{{aceHighlightManagerOccurenceItems}}"></hl-inspector>
       
     </div>
 
   </template>
-<script>
+  <script>
+    (function () {
+      'use strict';
+      Polymer({
+        is: 'asq-highlight-viewer-q',
+        properties: {
+          /**
+           * Set to true to style the element as disabled.
+           * Binded to `readonly` of ace-editor.
+           */
+          disabled: {
+            type: Boolean,
+            value: false,
+            notify: true,
+            reflectToAttribute: true
+          },
 
-(function(){
-  'use strict';
-  
-  var p = {
+          /**
+           * The fontSize property of the ace-element.
+           */
+          fontSize: { 
+            type: String,
+            value: "12px",
+            notify: true,
+            reflectToAttribute: true
+          },
 
-    publish:{
-      /**
-       * Sets the mode for the ace-editor
-       *
-       * @attribute mode
-       * @type string
-       * @default 'java'
-       */
-      mode: {value: 'java', reflect: true},
+          /**
+           * The mode property of the ace-element.
+           */
+          mode: {
+            type: String,
+            value: 'javascript',
+            reflectToAttribute: true,
+            notify: true
+          },
 
-      /**
-       * Sets the theme for the ace-editor
-       *
-       * @attribute theme
-       * @type string
-       * @default 'textmate'
-       */
-      theme: {value: 'textmate', reflect: true},
+          /**
+           * The tabSize property of the ace-element.
+           */
+          tabSize: { 
+            type: Number,
+            value: 2,
+            notify: true,
+            reflectToAttribute: true,
+          },
 
-      /**
-       * Sets the fontSize for the ace-editor
-       *
-       * @attribute fontSize
-       * @type string
-       * @default '12px'
-       */
-      fontSize: {value: '12px', reflect: true}
-    },
+          /**
+           * The theme property of the ace-element.
+           */
+          theme: {
+            type: String,
+            value: 'monokai',
+            notify: true,
+            reflectToAttribute: true,
+          },
 
+          /**
+           * The value property of the ace-element.
+           */
+          value: {
+            type: String,
+            value: null,
+            notify: true,
+            reflectToAttribute: true,
+          },
 
-    initAceElement: function(){
-      var code = this.$.codeContent.getDistributedNodes()[0]; 
-      if(code){
-        this.$.codeEditor.textContent = code.textContent;
-        this.$.codeEditor.initializeEditor();
-      } 
-    },
-   
-    created: function(){
-      this.palette = [];
-    },
+          /**
+           * The wrap property of the ace-element.
+           */
+          wrap: {
+            type: Boolean,
+            value: false,
+            notify: true,
+            reflectToAttribute: true,
+          },
+          solution: { notify: true },
+          /**
+           * The color palette
+           */
+          palette: {
+            type: Array,
+            value: function(){return []},
+            notify: true
+          },
+          /**
+           * The description of the current task
+           */
+          currentTaskDescription: {
+            type: String,
+            value: '',
+            notify: true
+          }
+        },
 
-    domReady: function(){
-      this.initAceElement();
-      this.populatePalette();
-    },
+        attached: function () {
+          this.$.aceHighlightManager.mode = this.$.aceHighlightManager.MODE_HIGHLIGHT;
+          document.addEventListener('asq-ready', function (evt) {
+            try {
+              this._subscribeToEvents(evt.detail.asqEventBus);
+            } catch (err) {
+              console.debug('failed to subscribeToEvents');
+            }
+          }.bind(this));
+          this._populatePalette();
+          this.$.taskSelector.selected = 0;
 
-    ready: function(){
+          //initialize highlight manager
+          // fixme: the reason for the timeout is that ace-element changes it's editor property internally. maybe expose it as areadonly
+          setTimeout(function(){
+            this.$.aceHighlightManager.editor = this.$.codeEditor.editor; 
+          }.bind(this),100)
+        },
 
-      this.$.aceHighlightManager.mode = this.$.aceHighlightManager.MODE_HIGHLIGHT;
+        _populatePalette: function () {
+          var tasks = Polymer.dom(this.$.tasksContent).getDistributedNodes();
+          this.palette = Array.prototype.map.call(tasks, function (task) {
+            return {
+              'color': task.color,
+              'name': task.colorName
+            };
+          });
+        },
 
-      document.addEventListener('asq-ready', function(evt){
-        try{
-          this.subscribeToEvents(evt.detail.asqEventBus);
-        }catch(err){
-          console.debug('failed to subscribeToEvents');
+        _setHighlightMode: function (event, detail) {
+          // already active
+          if (event.currentTarget.isActive())
+            return;
+          event.currentTarget.setActive(true);
+          this.$.eraseBtn.removeAttribute('active');
+          this.$.aceHighlightManager.setHighlightMode(this.$.aceHighlightManager.HIGHLIGHT_COLOR);
+        },
+
+        _setEraseMode: function (event, detail) {
+          // already active
+          if (event.currentTarget.hasAttribute('active'))
+            return;
+          event.currentTarget.setAttribute('active', '');
+          this.$.colorPalette.setActive(false);
+          this.$.aceHighlightManager.setHighlightMode(this.$.aceHighlightManager.HIGHLIGHT_ERASE);
+        },
+
+        submit: function () {
+          var submission = this.$.aceHighlightManager.getHighlightRanges();
+          return {
+            questionUid: this.uid,
+            timestamp: new Date(),
+            submission: submission
+          };
+        },
+
+        _subscribeToEvents: function (eventBus) {
+        },
+
+        _onTaskSelect: function(event, detail){
+          this.currentTaskDescription = this.$.taskSelector.selectedItem.textContent.trim()
         }
-      }.bind(this));
-    },
 
-    populatePalette: function(){
-      var tasks= this.$.tasksContent.getDistributedNodes();
-      this.palette = Array.prototype.map.call(tasks, function(task){
-        return {
-          "color" : task.color,
-          "name" : task.colorName
-        }
-      }) ;
-    },
-
-    setHighlightMode: function(event, detail, sender){
-      // already active
-      if (sender.isActive()) return;
-      
-      sender.setActive(true);
-      this.$.eraseBtn.removeAttribute("active") 
-      this.$.aceHighlightManager.setHighlightMode(this.$.aceHighlightManager.HIGHLIGHT_COLOR);
-    },
-
-    setEraseMode: function(event, detail, sender){
-      // already active
-      if (sender.hasAttribute("active")) return;
-      
-      sender.setAttribute("active", ''); 
-      this.$.colorPalette.setActive(false);
-      this.$.aceHighlightManager.setHighlightMode(this.$.aceHighlightManager.HIGHLIGHT_ERASE);
-    },
-
-
-    submit: function() {
-      var submission = this.$.aceHighlightManager.getHighlightRanges();
-
-      return {
-        questionUid: this.uid,
-        timestamp: new Date(),
-        submission: submission
-      };
-    },
-
-    subscribeToEvents: function(eventBus){
-    }
-  }
-
-  ASQ.asqify(p, true);
-  Polymer('asq-highlight-viewer-q', p);
-})();
-
-</script>
-
-</polymer-element>
+      });
+    }());
+  </script>
+</dom-module>

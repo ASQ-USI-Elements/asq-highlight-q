@@ -17,6 +17,7 @@ ASQ-Highlight comprises three main components:
 ##Developer
 Run the main ``grunt``task to get started:
 ```
+> git clone https://github.com/ASQ-USI-Elements/asq-highlight-q.git
 > cd asq-highlight-q
 > npm install
 > grunt

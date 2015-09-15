@@ -96,14 +96,14 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
   <template>    
 
     <!-- Viewer -->
-    <template is="dom-if" if="{{hasRole(roles.VIEWER)}}">
+    <template is="dom-if" if="{{hasRole(role, roles.VIEWER)}}">
       <asq-highlight-viewer-q mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" value="{{value}}" wrap="{{wrap}}">
         <content></content>
       </asq-highlight-viewer-q>
     </template>
     
     <!-- Presenter -->
-   <template is="dom-if" if="{{hasRole(roles.PRESENTER)}}">
+   <template is="dom-if" if="{{hasRole(role, roles.PRESENTER)}}">
       <asq-highlight-presenter-q mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" value="{{value}}" wrap="{{wrap}}">
         <content></content>
       </asq-highlight-presenter-q>
@@ -223,8 +223,8 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
         _subscribeToEvents: function (eventBus) {
         },
 
-        hasRole: function (role) {
-          return this.role == role;
+        hasRole: function (role, candiate) {
+          return role == candiate;
         }
       });
     }());

@@ -103,7 +103,7 @@ module.exports = function(grunt) {
   });
 
   // Default task(s).
-  grunt.registerTask('default', ['less', 'webpack', 'watch']);
+  grunt.registerTask('default', ['less', 'concat', 'webpack', 'watch']);
 
   //npm tasks
   require('load-grunt-tasks')(grunt);

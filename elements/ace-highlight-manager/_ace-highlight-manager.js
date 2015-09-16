@@ -294,6 +294,15 @@ var Range = ace.require('ace/range').Range
 	      hRanges[colorStr].push(v.range)
 	      
 	    });
+
+	    Object.keys(hRanges).forEach(function(hKey){
+	    	var hrange = hRanges[hKey];
+	    	hRanges[hKey] = hrange.sort(function(a, b) {
+	    	    return comparePoints(a.start, b.start);
+	    	});
+
+	    })
+
 	    return hRanges;
 	  },
 
@@ -559,7 +568,10 @@ var Range = ace.require('ace/range').Range
 	    	var colorRanges = solution[key];
 	    	colorRanges.forEach(function(range){
 	    		var range = new Range(range.start.row, range.start.column, range.end.row, range.end.column);
-	    		this.addMarker(range, 'ace_highlight marker-' + key);
+	    		var newMarkerId = this.addMarker(range, 'ace_highlight marker-' + key);
+	    		range.id = newMarkerId;
+	    		this.addRangeItem(this.aceEditSession.getMarkers()[newMarkerId], newMarkerId, key);
+	    		this.populateOccurenceItems();
 	    	}.bind(this));
 	    }.bind(this));
 	  }

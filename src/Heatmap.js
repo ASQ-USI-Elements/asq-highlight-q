@@ -52,7 +52,8 @@ var Heatmap = module.exports = function(options){
     }
 
     if(! this.hues[hue]){
-      this.hues[hue] = { weights: this.emptyLinesArray.slice(0), n : 0}
+      //use JSON parse and stringify for an easy clone :-)
+      this.hues[hue] = { weights: JSON.parse(JSON.stringify(this.emptyLinesArray)), n : 0}
     }
 
 
@@ -79,7 +80,7 @@ var Heatmap = module.exports = function(options){
         }
 
         //check if element is between range
-        if(i >= range.start.row && i <= range.end.row && j >= range.start.column && j <= range.end.column){
+        if(i >= range.start.row && i <= range.end.row && j >= range.start.column && j < range.end.column){
           hueWeights[i][j] = hueWeights[i][j] + (1 - hueWeights[i][j]) / n;
         }else{
           hueWeights[i][j] = hueWeights[i][j] -  hueWeights[i][j] / n;

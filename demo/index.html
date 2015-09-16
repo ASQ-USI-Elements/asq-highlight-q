@@ -46,5 +46,108 @@
 }</code>
 </asq-highlight-q>
 
+<script>
+  window.addEventListener('WebComponentsReady', function(){
+    var answers = [
+      { 
+        _id: '55f885bcb020385c4d26557f',
+        submitDate: Date.now(),
+        submission: {
+          'd9534f': [
+            {
+              'start': {
+                'row': '0',
+                'column': '0'
+              },
+              'end': {
+                'row': '0',
+                'column': '6'
+              },
+              'id': '42'
+            },
+            {
+              'start': {
+                'row': '1',
+                'column': '2'
+              },
+              'end': {
+                'row': '1',
+                'column': '8'
+              },
+              'id': '48'
+            }
+          ],
+          'f0ad4e': [
+            {
+              'start': {
+                'row': 2,
+                'column': 4
+              },
+              'end': {
+                'row': 2,
+                'column': 7
+              },
+              'id': 8
+            },
+            {
+              'start': {
+                'row': 2,
+                'column': 22
+              },
+              'end': {
+                'row': 2,
+                'column': 25
+              },
+              'id': 13
+            },
+            {
+              'start': {
+                'row': 2,
+                'column': 35
+              },
+              'end': {
+                'row': 2,
+                'column': 38
+              },
+              'id': 19
+            }
+          ]
+        }
+      },
+      {
+        _id: '55f885bcb020385c4d265572',
+        submitDate: Date.now(),
+        submission: {
+          'd9534f': [{
+            'start': {
+              'row': '0',
+              'column': '0'
+            },
+            'end': {
+              'row': '0',
+              'column': '6'
+            },
+            'id': '42'
+          }],
+          'f0ad4e': [{
+            'start': {
+              'row': 2,
+              'column': 4
+            },
+            'end': {
+              'row': 2,
+              'column': 7
+            },
+            'id': 8
+          }]
+        }
+      }
+    ];
+    var ah = document.querySelector('asq-highlight-q[role="presenter"]');
+    var ahp = Polymer.dom(ah.root).querySelector('asq-highlight-presenter-q');
+    ahp._answers = answers;
+  })
+</script>
+
 </body>
 </html>

@@ -340,6 +340,15 @@
 		      hRanges[colorStr].push(v.range)
 		      
 		    });
+
+		    Object.keys(hRanges).forEach(function(hKey){
+		    	var hrange = hRanges[hKey];
+		    	hRanges[hKey] = hrange.sort(function(a, b) {
+		    	    return comparePoints(a.start, b.start);
+		    	});
+
+		    })
+
 		    return hRanges;
 		  },
 
@@ -605,7 +614,10 @@
 		    	var colorRanges = solution[key];
 		    	colorRanges.forEach(function(range){
 		    		var range = new Range(range.start.row, range.start.column, range.end.row, range.end.column);
-		    		this.addMarker(range, 'ace_highlight marker-' + key);
+		    		var newMarkerId = this.addMarker(range, 'ace_highlight marker-' + key);
+		    		range.id = newMarkerId;
+		    		this.addRangeItem(this.aceEditSession.getMarkers()[newMarkerId], newMarkerId, key);
+		    		this.populateOccurenceItems();
 		    	}.bind(this));
 		    }.bind(this));
 		  }
@@ -706,7 +718,8 @@
 	    }
 
 	    if(! this.hues[hue]){
-	      this.hues[hue] = { weights: this.emptyLinesArray.slice(0), n : 0}
+	      //use JSON parse and stringify for an easy clone :-)
+	      this.hues[hue] = { weights: JSON.parse(JSON.stringify(this.emptyLinesArray)), n : 0}
 	    }
 
 
@@ -733,7 +746,7 @@
 	        }
 
 	        //check if element is between range
-	        if(i >= range.start.row && i <= range.end.row && j >= range.start.column && j <= range.end.column){
+	        if(i >= range.start.row && i <= range.end.row && j >= range.start.column && j < range.end.column){
 	          hueWeights[i][j] = hueWeights[i][j] + (1 - hueWeights[i][j]) / n;
 	        }else{
 	          hueWeights[i][j] = hueWeights[i][j] -  hueWeights[i][j] / n;

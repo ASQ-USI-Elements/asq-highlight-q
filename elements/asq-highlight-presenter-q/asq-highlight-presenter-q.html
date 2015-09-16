@@ -1,9 +1,12 @@
 <link rel="import" href="../../../polymer/polymer.html">
 <link rel="import" href="../../../ace-element/ace-element.html">
-<link rel="import" href="../../../iron-icons/editor-icons.html">
 <link rel="import" href="../../../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../iron-icons/editor-icons.html">
+<link rel="import" href="../../../iron-list/iron-list.html">
 <link rel="import" href="../../../iron-selector/iron-selector.html">
 <link rel="import" href="../../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../paper-item/paper-item.html">
+<link rel="import" href="../../../paper-tabs/paper-tab.html">
 <link rel="import" href="../../../paper-toolbar/paper-toolbar.html">
 
 <link rel="import" href="../../../asq-base/asq-base.html">
@@ -47,6 +50,7 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         @apply(--layout-flex);
         --paper-toolbar-background: #CFD8DC;
         --paper-toolbar-color: #000;  
+        --paper-tabs-selection-bar-color: #333;
       }
 
       #container{
@@ -68,6 +72,18 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         background: #f8f8f8;
         @apply(--layout-flex);
       }
+
+      #submissionList {
+        @apply(--layout-flex);
+      }
+
+      #submissionList paper-item{
+        padding-top: 12px;
+        background-color: white;
+        cursor: pointer;
+        @apply(--shadow-elevation-2dp);
+      }
+
     </style>
     <div id="leContent">
       <content id="stemContent" select="asq-stem"></content>
@@ -80,12 +96,11 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
     </div>
 
     <div id="container">
-      <div class="layout vertical flex">
+      <div class="layout vertical flex-3">
 
         <paper-toolbar>
           <paper-icon-button id="heatmapBtn" icon="assessment" on-tap="_onHeatmapBtnTap" title="Show heatmap" active$="{{_isInHeatmapMode(displayMode)}}"></paper-icon-button>          
           <span id="statusMsg">{{statusMessage}}</span>
-          <paper-icon-button id="solutionBtn" icon="done-all" on-tap="_onSolutionBtnTap" title="Show Solution" active$="{{_isInSolutionMode(displayMode)}}"></paper-icon-button>
         </paper-toolbar>
 
         <div id="aceContainer">
@@ -93,6 +108,20 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
           <ace-highlight-manager id="aceHighlightManager" colors="{{palette}}" selection-color="{{colorPaletteSelectedColor}}"></ace-highlight-manager>
         </div>
       </div>
+
+      <div id="list-container" class="layout vertical flex-2">
+        <paper-tabs selected="0" selected-attribute="active" noink role="tablist">     
+          <paper-tab role="tab">Submissions</paper-tab>            
+        </paper-tabs>
+        <iron-list id="submissionList" items="[[_submissions]]" as="submission" selection-enabled selected-item="{{_selectedSubmissionItem}}">
+          <template>
+            <paper-item class="{{_computeClass(selected)}}">
+              Submission #<span>[[index]]</span>
+            </paper-item>
+          </template>
+        </iron-list>
+      </div>
+
     </div>
 
   </template>
@@ -101,6 +130,9 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
       'use strict';
       Polymer({
         is: 'asq-highlight-presenter-q',
+
+        behaviors: [ASQ.asqQuestionElementBehavior],
+
         properties: {
           
           disabled: {
@@ -195,22 +227,55 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
             type: Array,
             value: function(){return []},
             notify: true
+          },
+
+          /**
+           * Event bus to communicate with ASQ
+           */
+          eventBus: {
+            type: Object,
+            observer: "_eventBusChanged",
+            notify: true
+          },
+
+          _submissions:{
+            type: Array,
+            notify: true
+          },
+
+          _heatmapData: {
+            type: Array, 
+            computed: '_computeHeatmapData(_submissions)',
+            observer: '_heatmapDataChanged'
+          },
+
+         _selectedSubmissionItem: {
+            observer: '_selectedSubmissionItemChanged'
           }
+        },
+
+        created: function(){
+          // document.addEventListener('asq-ready', function (evt) {
+          //   try {
+          //     this._subscribeToEvents(evt.detail.asqEventBus);
+          //   } catch (err) {
+          //     console.debug('failed to _subscribeToEvents');
+          //   }
+          // }.bind(this));
+        },
+
+        attached: function(){
+          setTimeout(function(){
+            this.$.aceHighlightManager.updateHeatmapData(this._heatmapData);
+          }.bind(this), 1);
         },
 
         ready: function () {
           this.$.aceHighlightManager.mode = this.$.aceHighlightManager.MODE_HEATMAP;
-          document.addEventListener('asq-ready', function (evt) {
-            try {
-              this.subscribeToEvents(evt.detail.asqEventBus);
-            } catch (err) {
-              console.debug('failed to subscribeToEvents');
-            }
-          }.bind(this));
           this._populatePalette();
 
           //initialize highlight manager
-          // fixme: the reason for the timeout is that ace-element changes it's editor property internally. maybe expose it as areadonly
+          // fixme: the reason for the timeout is that ace-element changes it's editor property internally. maybe expose it as a readonly so that the pointer is always cool
           setTimeout(function(){
             this.$.aceHighlightManager.editor = this.$.codeEditor.editor; 
           }.bind(this),100)
@@ -228,31 +293,42 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
 
         _displayModeChanged: function (newVal, oldVal) {
           if (newVal == 'heatmap') {
+            this.$.taskSelector._selection.clear();
             this.$.taskSelector.multi = false;
+            this.$.taskSelector.select("0")
             this._showHeatmap();
           } else if (newVal == 'solution') {
             this.$.taskSelector.multi = true;
-            this._showSolution();
           }
         },
 
         _onQuestionType: function (evt) {
-          if (evt && evt.questionType && evt.questionType == this.tagName.toLowerCase()) {
+          if(!evt || ! evt.questionType) return;
+
+          if (evt.questionType == "asq-highlight-q") {
             if (evt.type == 'progress') {
               this._onProgress(evt);
+            }else if(evt.type == "restorePresenter"){
+            this._onRestorePresenter(evt);
             }
           }
         },
 
         _onProgress: function (evt) {
-          if (evt.questionUid !== this.uid)
+          if (!evt.question || evt.question.uid !== this.uid)
             return;
-          if (this.role !== this.roles.PRESENTER)
-            return;
-          this.updateProgress(evt.heatmapData);
+
+          this._submissions = evt.question.submissions;
         },
 
-        _updateProgress: function (heatmapData) {
+        _onRestorePresenter: function(evt){
+          evt.questions.forEach(function(q){
+           if(q.uid != this.uid) return;
+           this._submissions = q.submissions;
+          }.bind(this));
+        },
+
+        _heatmapDataChanged: function (heatmapData, old) {
           this.$.aceHighlightManager.updateHeatmapData(heatmapData);
         },
 
@@ -260,102 +336,19 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
           this.displayMode = 'heatmap';
         },
 
-        _onSolutionBtnTap: function (event, detail, sender) {
+        _selectedSubmissionItemChanged: function(newItem, old){
+          if(!newItem) return;
           this.displayMode = 'solution';
+          this._showSolution(newItem.submission)
+        },
+
+        _computeHeatmapData: function(answers){
+          return answers.map(function(answer){
+            return answer.submission;
+          });
         },
 
         _showHeatmap: function () {
-          this._updateProgress([
-            {
-              'd9534f': [
-                {
-                  'start': {
-                    'row': '0',
-                    'column': '0'
-                  },
-                  'end': {
-                    'row': '0',
-                    'column': '6'
-                  },
-                  'id': '42'
-                },
-                {
-                  'start': {
-                    'row': '1',
-                    'column': '2'
-                  },
-                  'end': {
-                    'row': '1',
-                    'column': '8'
-                  },
-                  'id': '48'
-                }
-              ]
-            },
-            {
-              'd9534f': [{
-                  'start': {
-                    'row': '0',
-                    'column': '0'
-                  },
-                  'end': {
-                    'row': '0',
-                    'column': '6'
-                  },
-                  'id': '42'
-                }]
-            },
-            {
-              'f0ad4e': [{
-                  'start': {
-                    'row': 2,
-                    'column': 4
-                  },
-                  'end': {
-                    'row': 2,
-                    'column': 7
-                  },
-                  'id': 8
-                }]
-            },
-            {
-              'f0ad4e': [
-                {
-                  'start': {
-                    'row': 2,
-                    'column': 4
-                  },
-                  'end': {
-                    'row': 2,
-                    'column': 7
-                  },
-                  'id': 8
-                },
-                {
-                  'start': {
-                    'row': 2,
-                    'column': 22
-                  },
-                  'end': {
-                    'row': 2,
-                    'column': 25
-                  },
-                  'id': 13
-                },
-                {
-                  'start': {
-                    'row': 2,
-                    'column': 35
-                  },
-                  'end': {
-                    'row': 2,
-                    'column': 38
-                  },
-                  'id': 19
-                }
-              ]
-            }
-          ]);
           var selectedItem = this.$.taskSelector.selectedItem;
           if (!selectedItem)
             return;
@@ -370,90 +363,8 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
             }
           }
         },
-        _showSolution: function (event, detail, sender) {
-          var solution = {
-            'd9534f': [
-              {
-                'start': {
-                  'row': 0,
-                  'column': 0
-                },
-                'end': {
-                  'row': 0,
-                  'column': 6
-                },
-                'id': 8
-              },
-              {
-                'start': {
-                  'row': 1,
-                  'column': 1
-                },
-                'end': {
-                  'row': 1,
-                  'column': 7
-                },
-                'id': 15
-              }
-            ],
-            '428bca': [{
-                'start': {
-                  'row': 2,
-                  'column': 3
-                },
-                'end': {
-                  'row': 2,
-                  'column': 6
-                },
-                'id': 21
-              }],
-            'f0ad4e': [
-              {
-                'start': {
-                  'row': 0,
-                  'column': 7
-                },
-                'end': {
-                  'row': 0,
-                  'column': 12
-                },
-                'id': 30
-              },
-              {
-                'start': {
-                  'row': 1,
-                  'column': 8
-                },
-                'end': {
-                  'row': 1,
-                  'column': 12
-                },
-                'id': 37
-              },
-              {
-                'start': {
-                  'row': 2,
-                  'column': 21
-                },
-                'end': {
-                  'row': 2,
-                  'column': 24
-                },
-                'id': 44
-              },
-              {
-                'start': {
-                  'row': 2,
-                  'column': 34
-                },
-                'end': {
-                  'row': 2,
-                  'column': 37
-                },
-                'id': 50
-              }
-            ]
-          };
+
+        _showSolution: function (solution) {
           var appliedSolution = {};
           this.statusMessage = 'Solution for';
 
@@ -483,7 +394,8 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
           this.$.aceHighlightManager.drawSolution(appliedSolution);
         },
 
-        subscribeToEvents: function (eventBus) {
+        _eventBusChanged: function (eventBus, old) {
+          if(!eventBus) return;
           eventBus.on('asq:question_type', this._onQuestionType.bind(this));
         },
 
@@ -491,7 +403,9 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
           if (this.displayMode == 'heatmap') {
             this._showHeatmap();
           } else if (this.displayMode == 'solution') {
-            this._showSolution();
+            if(this.$.submissionList.selectedItem){
+              this._showSolution(this.$.submissionList.selectedItem.submission);
+            }
           }
         },
 
@@ -501,6 +415,12 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
 
         _isInSolutionMode: function (displayMode) {
           return displayMode == 'solution';
+        },
+
+        _computeClass: function (selected) {
+          var classList = '';
+          if (selected) classList = 'selected';
+          return selected;
         }
       });
     }());

@@ -1,6 +1,6 @@
 <link rel="import" href="../../../polymer/polymer.html">
 <link rel="import" href="../../../paper-tabs/paper-tabs.html">
-<link rel="import" href="../../../paper-tabs/paper-tab.html" <link="">
+<link rel="import" href="../../../paper-tabs/paper-tab.html">
 <link rel="import" href="../../../iron-pages/iron-pages.html">
 <link rel="import" href="../../../iron-flex-layout/iron-flex-layout.html">
 
@@ -29,40 +29,40 @@
     <style include="hl-inspector-styles"></style>
 
      <paper-tabs selected="{{selected}}" selected-attribute="active" noink role="tablist">     
-          <paper-tab role="tab">Ranges</paper-tab>
-          <paper-tab role="tab">Occurences</paper-tab>            
-        </paper-tabs>
+        <paper-tab role="tab">Ranges</paper-tab>
+        <paper-tab role="tab">Occurences</paper-tab>            
+      </paper-tabs>
 
-        <iron-pages selected="{{selected}}">
+      <iron-pages selected="{{selected}}">
 
-          <div>
-            <template is="dom-repeat" items="{{rangeItems}}" as="r">
-              <li class="collapsed list-group-item" id="{{r.id}}" on-dblclick="expandClick">
-                <!-- <span class="label label-default {{r.colorClass}}">&nbsp;</span> -->
-                <iron-icon id="coreIcon" icon="" aria-label="color" role="img" class$="{{r.colorClass}}"></iron-icon>
-                <button class="he-code-toggle" on-tap="expandClick">
-                  <iron-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></iron-icon><iron-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></iron-icon>
-                </button>                
-                <code class="he-highlighted-summary">{{r.summary}}</code>
-                <span class="badge">{{r.range}}</span>
-                <pre class="he-highlighted-code"><code>{{r.text}}</code></pre>
-              </li>
-            </template>
-          </div>
+        <div>
+          <template is="dom-repeat" items="{{rangeItems}}" as="r">
+            <li class="collapsed list-group-item" id="{{r.id}}" on-dblclick="expandClick">
+              <!-- <span class="label label-default {{r.colorClass}}">&nbsp;</span> -->
+              <iron-icon id="coreIcon" icon="" aria-label="color" role="img" class$="{{r.colorClass}}"></iron-icon>
+              <button class="he-code-toggle" on-tap="expandClick">
+                <iron-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></iron-icon><iron-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></iron-icon>
+              </button>                
+              <code class="he-highlighted-summary">{{r.summary}}</code>
+              <span class="badge">{{r.range}}</span>
+              <pre class="he-highlighted-code"><code>{{r.text}}</code></pre>
+            </li>
+          </template>
+        </div>
 
-          <div>
-            <template is="dom-repeat" items="{{occurenceItems}}" as="o">
-              <li class="collapsed list-group-item" on-dblclick="expandClick">
-                <button class="he-code-toggle" on-tap="expandClick">
-                  <iron-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></iron-icon><iron-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></iron-icon>
-                </button>            
-                <code class="he-highlighted-summary">{{o.summary}}</code>
-                <span class$="{{computeClass(o)}}">{{o.occurences}}</span>
-                <pre class="he-highlighted-code"><code>{{o.text}}</code></pre>
-              </li>
-            </template>
-          </div>
-        </iron-pages>
+        <div>
+          <template is="dom-repeat" items="{{occurenceItems}}" as="o">
+            <li class="collapsed list-group-item" on-dblclick="expandClick">
+              <button class="he-code-toggle" on-tap="expandClick">
+                <iron-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></iron-icon><iron-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></iron-icon>
+              </button>            
+              <code class="he-highlighted-summary">{{o.summary}}</code>
+              <span class$="{{computeClass(o)}}">{{o.occurences}}</span>
+              <pre class="he-highlighted-code"><code>{{o.text}}</code></pre>
+            </li>
+          </template>
+        </div>
+      </iron-pages>
         
     
 

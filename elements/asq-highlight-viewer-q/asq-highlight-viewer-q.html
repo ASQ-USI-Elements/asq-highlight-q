@@ -102,6 +102,9 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
       'use strict';
       Polymer({
         is: 'asq-highlight-viewer-q',
+
+        behaviors: [ASQ.asqQuestionElementBehavior],
+
         properties: {
           /**
            * Set to true to style the element as disabled.
@@ -189,18 +192,27 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
             type: String,
             value: '',
             notify: true
+          },
+
+          /**
+           * Event bus to communicate with ASQ
+           */
+          eventBus: {
+            type: Object,
+            observer: "_eventBusChanged",
+            notify: true
           }
         },
 
         attached: function () {
           this.$.aceHighlightManager.mode = this.$.aceHighlightManager.MODE_HIGHLIGHT;
-          document.addEventListener('asq-ready', function (evt) {
-            try {
-              this._subscribeToEvents(evt.detail.asqEventBus);
-            } catch (err) {
-              console.debug('failed to subscribeToEvents');
-            }
-          }.bind(this));
+          // document.addEventListener('asq-ready', function (evt) {
+          //   try {
+          //     this._subscribeToEvents(evt.detail.asqEventBus);
+          //   } catch (err) {
+          //     console.debug('failed to subscribeToEvents');
+          //   }
+          // }.bind(this));
           this._populatePalette();
           this.$.taskSelector.selected = 0;
 
@@ -248,7 +260,27 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
           };
         },
 
-        _subscribeToEvents: function (eventBus) {
+        _onQuestionType: function(evt){
+          if(!evt || ! evt.questionType) return;
+
+          if(evt.questionType == 'asq-highlight-q'){
+            if(evt.type == "restoreViewer"){
+              this._onRestoreViewer(evt);
+            }
+          }
+        },
+
+        _onRestoreViewer: function(evt){
+          evt.questions.forEach(function(q){
+           if(q.uid != this.uid) return;
+           // this._submission = q.submission;
+           this.$.aceHighlightManager.drawSolution(q.submission);
+          }.bind(this));
+        },
+
+        _eventBusChanged: function (eventBus, old) {
+          if(!eventBus) return;
+          eventBus.on('asq:question_type', this._onQuestionType.bind(this));
         },
 
         _onTaskSelect: function(event, detail){

@@ -9,18 +9,26 @@
         padding:4px 5px;
         cursor: pointer;
       }
+
+      #checkIcon, #emptyIcon{
+        display:none;
+      }
     </style>
   <template>
     
     <div>
-      <iron-icon id="leIcon" icon="" aria-label="color" role="img" style$="{{_computeStyle(color)}}"></iron-icon>&nbsp;<content></content>
+      <iron-icon id="checkIcon" icon="check" aria-label="color" role="img" style$="{{_computeStyle(color)}}"></iron-icon><iron-icon id="emptyIcon" icon="" aria-label="color" role="img" style$="{{_computeStyle(color)}}"></iron-icon>&nbsp;<content></content>
     </div>
   </template>
   <script>
     Polymer({
       is: 'asq-hl-color-task',
+      
       properties: {
         active: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
           notify: true,
           observer: '_activeChanged'
         },
@@ -31,12 +39,29 @@
         },
         colorName: { notify: true }
       },
-      _activeChanged: function () {
-        var icon = this.hasAttribute('active') ? 'check' : ' ';
-        this.$.leIcon.icon = icon;
+
+      _activeChanged: function (newVal, oldVal) {
+        // why do I have two iron-icon elements instead of one where I can
+        // set the icon attribute to `check` or `` you ask?
+        // Well, this element is used inside iron-selector elementss
+        // which have a mutation observer that gets triggered
+        // when you change the icon since a change replaces the whole
+        // iron-icon. Bummer I know.
+        if(newVal){
+          this.$.checkIcon.style.display = "inline-flex";
+          this.$.emptyIcon.style.display = "none";
+        }else{
+          this.$.checkIcon.style.display = "none";
+          this.$.emptyIcon.style.display = "inline-flex";
+        }
       },
+
       _computeStyle: function (color) {
         return 'background-color: #' + color + ';';
+      },
+
+      attached: function attached(){
+        this._activeChanged(this.active);
       }
     });
   </script>

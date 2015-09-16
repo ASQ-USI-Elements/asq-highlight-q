@@ -96,15 +96,15 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
   <template>    
 
     <!-- Viewer -->
-    <template is="dom-if" if="{{hasRole(role, roles.VIEWER)}}">
-      <asq-highlight-viewer-q mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" value="{{value}}" wrap="{{wrap}}">
+    <template is="dom-if" if="{{hasRole(role, roles.VIEWER)}}" restamp>
+      <asq-highlight-viewer-q role="viewer" uid="[[uid]]" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" value="{{value}}" wrap="{{wrap}}" event-bus="[[eventBus]]">
         <content></content>
       </asq-highlight-viewer-q>
     </template>
     
     <!-- Presenter -->
-   <template is="dom-if" if="{{hasRole(role, roles.PRESENTER)}}">
-      <asq-highlight-presenter-q mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" value="{{value}}" wrap="{{wrap}}">
+   <template is="dom-if" if="{{hasRole(role, roles.PRESENTER)}}" restamp>
+      <asq-highlight-presenter-q role="presenter" uid="[[uid]]" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" value="{{value}}" wrap="{{wrap}}" event-bus="[[eventBus]]">
         <content></content>
       </asq-highlight-presenter-q>
     </template>
@@ -188,7 +188,12 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
             notify: true,
             reflectToAttribute: true,
           },
-          solution: { notify: true }
+          solution: { notify: true },
+
+          eventBus: {
+            type: Object,
+            notify: true
+          }
         },
 
         ready: function () {
@@ -201,7 +206,7 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
 
           document.addEventListener('asq-ready', function (evt) {
             try {
-              this._subscribeToEvents(evt.detail.asqEventBus);
+              this.eventBus = evt.detail.asqEventBus
             } catch (err) {
               console.debug('failed to subscribeToEvents');
             }
@@ -218,9 +223,6 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
             submission.questionUid = this.uid;
             return submission;
           }
-        },
-
-        _subscribeToEvents: function (eventBus) {
         },
 
         hasRole: function (role, candiate) {

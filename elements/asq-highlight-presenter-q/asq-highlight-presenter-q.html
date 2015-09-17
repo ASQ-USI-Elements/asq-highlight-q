@@ -6,6 +6,7 @@
 <link rel="import" href="../../../iron-selector/iron-selector.html">
 <link rel="import" href="../../../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../paper-item/paper-item.html">
+<link rel="import" href="../../../paper-tabs/paper-tabs.html">
 <link rel="import" href="../../../paper-tabs/paper-tab.html">
 <link rel="import" href="../../../paper-toolbar/paper-toolbar.html">
 
@@ -99,8 +100,9 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
       <div class="layout vertical flex-3">
 
         <paper-toolbar>
-          <paper-icon-button id="heatmapBtn" icon="assessment" on-tap="_onHeatmapBtnTap" title="Show heatmap" active$="{{_isInHeatmapMode(displayMode)}}"></paper-icon-button>          
+          <paper-icon-button id="heatmapBtn" icon="assessment" on-tap="_onHeatmapBtnTap" title="Show heatmap"></paper-icon-button>          
           <span id="statusMsg">{{statusMessage}}</span>
+          <paper-icon-button id="solutionBtn" icon="done-all" on-tap="_onSolutionBtnTap" title="Show Solution"></paper-icon-button>
         </paper-toolbar>
 
         <div id="aceContainer">
@@ -203,8 +205,6 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
             reflectToAttribute: true,
           },
 
-          solution: { notify: true },
-
           displayMode: {
             type: String,
             value: 'heatmap',
@@ -254,25 +254,15 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
           }
         },
 
-        created: function(){
-          // document.addEventListener('asq-ready', function (evt) {
-          //   try {
-          //     this._subscribeToEvents(evt.detail.asqEventBus);
-          //   } catch (err) {
-          //     console.debug('failed to _subscribeToEvents');
-          //   }
-          // }.bind(this));
-        },
-
         attached: function(){
           setTimeout(function(){
             this.$.aceHighlightManager.updateHeatmapData(this._heatmapData);
           }.bind(this), 1);
+          this._populatePalette();
         },
 
         ready: function () {
           this.$.aceHighlightManager.mode = this.$.aceHighlightManager.MODE_HEATMAP;
-          this._populatePalette();
 
           //initialize highlight manager
           // fixme: the reason for the timeout is that ace-element changes it's editor property internally. maybe expose it as a readonly so that the pointer is always cool
@@ -296,8 +286,7 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
             this.$.taskSelector._selection.clear();
             this.$.taskSelector.multi = false;
             this.$.taskSelector.select("0")
-            this._showHeatmap();
-          } else if (newVal == 'solution') {
+          } else if (newVal == 'ranges' || newVal == 'solution') {
             this.$.taskSelector.multi = true;
           }
         },
@@ -325,6 +314,7 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
           evt.questions.forEach(function(q){
            if(q.uid != this.uid) return;
            this._submissions = q.submissions;
+           this.solution = q.data.solution;
           }.bind(this));
         },
 
@@ -332,14 +322,21 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
           this.$.aceHighlightManager.updateHeatmapData(heatmapData);
         },
 
-        _onHeatmapBtnTap: function (event, detail, sender) {
+        _onHeatmapBtnTap: function (event, detail) {
           this.displayMode = 'heatmap';
+          this._showHeatmap();
+        },
+
+        _onSolutionBtnTap: function (event, detail) {
+          this.displayMode = 'solution';
+          this._applyHueRanges(this.solution)
         },
 
         _selectedSubmissionItemChanged: function(newItem, old){
+          this.displayMode = 'ranges';
           if(!newItem) return;
-          this.displayMode = 'solution';
-          this._showSolution(newItem.submission)
+          this.displayMode = 'ranges';
+          this._applyHueRanges(newItem.submission)
         },
 
         _computeHeatmapData: function(answers){
@@ -364,9 +361,11 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
           }
         },
 
-        _showSolution: function (solution) {
-          var appliedSolution = {};
-          this.statusMessage = 'Solution for';
+        _applyHueRanges: function (hueRanges) {
+          if(!hueRanges) return;
+          
+          var appliedHueRanges = {};
+          this.statusMessage = 'Ranges for';
 
           var selectedItems = this.$.taskSelector.selectedItems;
 
@@ -383,15 +382,15 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
               return item.color;
             }.bind(this));
             colors.forEach(function (c) {
-              if (solution.hasOwnProperty(c)) {
-                appliedSolution[c] = solution[c].slice();
+              if (hueRanges.hasOwnProperty(c)) {
+                appliedHueRanges[c] = hueRanges[c].slice();
               }
             });
           } else {
-            appliedSolution = solution;
-            this.statusMessage = 'Solution for all';
+            appliedHueRanges = hueRanges;
+            this.statusMessage = 'Ranges for all';
           }
-          this.$.aceHighlightManager.drawSolution(appliedSolution);
+          this.$.aceHighlightManager.drawSolution(appliedHueRanges);
         },
 
         _eventBusChanged: function (eventBus, old) {
@@ -402,19 +401,13 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         _onSelectedTaskChanged: function (event, detail) {
           if (this.displayMode == 'heatmap') {
             this._showHeatmap();
-          } else if (this.displayMode == 'solution') {
+          } else if (this.displayMode == 'ranges') {
             if(this.$.submissionList.selectedItem){
-              this._showSolution(this.$.submissionList.selectedItem.submission);
+              this._applyHueRanges(this.$.submissionList.selectedItem.submission);
             }
+          }else if (this.displayMode == 'solution') {
+            this._applyHueRanges(this.solution);
           }
-        },
-
-        _isInHeatmapMode: function (displayMode) {
-          return displayMode == 'heatmap';
-        },
-
-        _isInSolutionMode: function (displayMode) {
-          return displayMode == 'solution';
         },
 
         _computeClass: function (selected) {

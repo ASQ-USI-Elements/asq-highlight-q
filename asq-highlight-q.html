@@ -1,6 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../asq-base/asq-base.html">
-<!-- <link rel="import" href="../asq-solution/asq-solution.html"> -->
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="elements/asq-highlight-presenter-q/asq-highlight-presenter-q.html">
@@ -190,6 +189,9 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
           },
           solution: { notify: true },
 
+          /**
+           * Event bus to communicate with ASQ
+           */
           eventBus: {
             type: Object,
             notify: true
@@ -205,11 +207,7 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
           }
 
           document.addEventListener('asq-ready', function (evt) {
-            try {
-              this.eventBus = evt.detail.asqEventBus
-            } catch (err) {
-              console.debug('failed to subscribeToEvents');
-            }
+            this.eventBus = evt.detail.asqEventBus
           }.bind(this));
         },
 

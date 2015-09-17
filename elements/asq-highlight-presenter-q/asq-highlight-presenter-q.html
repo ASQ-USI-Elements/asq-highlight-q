@@ -10,8 +10,8 @@
 <link rel="import" href="../../../paper-toolbar/paper-toolbar.html">
 
 <link rel="import" href="../../../asq-base/asq-base.html">
+<link rel="import" href="../../../asq-solution/asq-solution.html">
 <link rel="import" href="../../../asq-stem/asq-stem.html">
-<!-- <link rel="import" href="../../../asq-solution/asq-solution.html"> -->
 
 <link rel="import" href="../ace-highlight-manager/ace-highlight-manager.html">
 <link rel="import" href="../asq-hl-color-task/asq-hl-color-task.html">
@@ -318,7 +318,7 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
           if (!evt.question || evt.question.uid !== this.uid)
             return;
 
-          this._submissions = evt.question.submissions;
+          this._submissions = evt.question.answers;
         },
 
         _onRestorePresenter: function(evt){

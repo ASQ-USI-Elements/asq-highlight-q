@@ -8,8 +8,8 @@
 <link rel="import" href="../../../paper-toolbar/paper-toolbar.html">
 
 <link rel="import" href="../../../asq-base/asq-base.html">
+<link rel="import" href="../../../asq-solution/asq-solution.html">
 <link rel="import" href="../../../asq-stem/asq-stem.html">
-<!-- <link rel="import" href="../../../asq-solution/asq-solution.html"> -->
 
 <link rel="import" href="../ace-highlight-manager/ace-highlight-manager.html">
 <link rel="import" href="../asq-hl-color-task/asq-hl-color-task.html">
@@ -64,6 +64,10 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
         overflow-y: scroll;
         background: #f8f8f8;
         @apply(--layout-flex);
+      }
+
+      #leContent ::content asq-solution{
+        display:none;
       }
     </style>
     <div id="leContent">

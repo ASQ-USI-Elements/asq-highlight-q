@@ -247,8 +247,7 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
 
           _heatmapData: {
             type: Array, 
-            computed: '_computeHeatmapData(_submissions)',
-            observer: '_heatmapDataChanged'
+            computed: '_computeHeatmapData(_submissions)'
           },
 
          _selectedSubmissionItem: {
@@ -266,6 +265,13 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
             this.$.codeEditor.editor.resize();
             this.$.aceHighlightManager.editor = this.$.codeEditor.editor; 
             this.$.aceHighlightManager.updateHeatmapData(this._heatmapData || []);
+
+            //start in heatmap mode
+            if(this.$.taskSelector.items){
+              this.$.taskSelector.select(0)
+            }
+
+            this._onHeatmapBtnTap();
           }.bind(this), 10)
         },
 
@@ -310,6 +316,7 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
             return;
 
           this._submissions = evt.question.answers;
+          this._draw();
         },
 
         _onRestorePresenter: function(evt){
@@ -318,10 +325,7 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
            this._submissions = q.submissions;
            this.solution = q.data.solution;
           }.bind(this));
-        },
-
-        _heatmapDataChanged: function (heatmapData, old) {
-          this.$.aceHighlightManager.updateHeatmapData(heatmapData);
+           this._draw();
         },
 
         _onHeatmapBtnTap: function (event, detail) {
@@ -355,6 +359,9 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         },
 
         _showHeatmap: function () {
+          //have the latest and greatest
+          this.$.aceHighlightManager.updateHeatmapData(this._heatmapData || []);
+
           var selectedItem = this.$.taskSelector.selectedItem;
           if (!selectedItem)
             return;
@@ -408,6 +415,10 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         },
 
         _onSelectedTaskChanged: function (event, detail) {
+         this._draw()
+        },
+
+        _draw: function(){
           if (this.displayMode == 'heatmap') {
             this._showHeatmap();
           } else if (this.displayMode == 'ranges') {

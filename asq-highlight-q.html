@@ -95,14 +95,14 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
   <template>    
 
     <!-- Viewer -->
-    <template is="dom-if" if="{{hasRole(role, roles.VIEWER)}}" restamp>
+    <template is="dom-if" if="{{hasRole(role, roles.VIEWER)}}" restamp="true">
       <asq-highlight-viewer-q role="viewer" uid="[[uid]]" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" value="{{value}}" wrap="{{wrap}}" event-bus="[[eventBus]]">
         <content></content>
       </asq-highlight-viewer-q>
     </template>
     
     <!-- Presenter -->
-   <template is="dom-if" if="{{hasRole(role, roles.PRESENTER)}}" restamp>
+   <template is="dom-if" if="{{hasRole(role, roles.PRESENTER)}}" restamp="true">
       <asq-highlight-presenter-q role="presenter" uid="[[uid]]" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" value="{{value}}" wrap="{{wrap}}" event-bus="[[eventBus]]">
         <content></content>
       </asq-highlight-presenter-q>

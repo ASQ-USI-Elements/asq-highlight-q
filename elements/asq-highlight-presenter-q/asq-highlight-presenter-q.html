@@ -56,9 +56,16 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         --paper-tabs-selection-bar-color: #333;
       }
 
-      #container{
+      #mainContainer{
         @apply(--layout-horizontal);
         @apply(--layout-flex);
+        @apply(--asq-highlight-q-main-container);
+      }
+
+      #editorContainer{
+        @apply(--layout-vertical);
+        @apply(--layout-flex-3);
+        @apply(--asq-highlight-q-editor-container);
       }
 
       #aceContainer{
@@ -87,6 +94,12 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         @apply(--shadow-elevation-2dp);
       }
 
+      #inspector {
+        @apply(--layout-vertical);
+        @apply(--layout-flex-2);
+        @apply(--asq-highlight-q-inspector);
+      }
+
     </style>
     <div id="leContent">
       <content id="stemContent" select="asq-stem"></content>
@@ -98,8 +111,8 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
       <content></content>
     </div>
 
-    <div id="container">
-      <div class="layout vertical flex-3">
+    <div id="mainContainer">
+      <div id="editorContainer">
 
         <paper-toolbar>
           <paper-icon-button id="heatmapBtn" icon="assessment" on-tap="_onHeatmapBtnTap" title="Show heatmap"></paper-icon-button>          
@@ -113,7 +126,7 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         </div>
       </div>
 
-      <div id="list-container" class="layout vertical flex-2">
+      <div id="inspector" class="layout vertical flex-2">
         <paper-tabs selected="0" selected-attribute="active" noink role="tablist">     
           <paper-tab role="tab">Submissions</paper-tab>            
         </paper-tabs>

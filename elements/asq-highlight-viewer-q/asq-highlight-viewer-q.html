@@ -224,8 +224,12 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
 
           //initialize highlight manager
           // fixme: the reason for the timeout is that ace-element changes it's editor property internally. maybe expose it as areadonly
+
+          // have to wait for ace-element to upgrade its internal editor
+          // so that aceHighlightManger has the correct instance
           setTimeout(function(){
             this.$.aceHighlightManager.editor = this.$.codeEditor.editor; 
+            this.$.codeEditor.editor.resize();
           }.bind(this),100)
         },
 

@@ -258,19 +258,19 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
 
         attached: function(){
           this._populatePalette();
+          //initialize highlight manager
+          // fixme: the reason for the timeout is that ace-element changes it's editor property internally. maybe expose it as a readonly so that the pointer is always cool
+          // have to wait for ace-element to upgrade its internal editor
+          // so that aceHighlightManger has the correct instance
           setTimeout(function(){
+            this.$.codeEditor.editor.resize();
+            this.$.aceHighlightManager.editor = this.$.codeEditor.editor; 
             this.$.aceHighlightManager.updateHeatmapData(this._heatmapData || []);
-          }.bind(this), 1);
+          }.bind(this), 10)
         },
 
         ready: function () {
           this.$.aceHighlightManager.mode = this.$.aceHighlightManager.MODE_HEATMAP;
-
-          //initialize highlight manager
-          // fixme: the reason for the timeout is that ace-element changes it's editor property internally. maybe expose it as a readonly so that the pointer is always cool
-          setTimeout(function(){
-            this.$.aceHighlightManager.editor = this.$.codeEditor.editor; 
-          }.bind(this),100)
         },
 
         _populatePalette: function () {

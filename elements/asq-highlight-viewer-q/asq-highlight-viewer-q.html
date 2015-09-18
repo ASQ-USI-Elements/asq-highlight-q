@@ -52,8 +52,14 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
         --paper-toolbar-color: #000;  
       }
 
-      #editorContainer{
+      #mainContainer{
         @apply(--layout-horizontal);
+        @apply(--layout-flex);
+        @apply(--asq-highlight-q-main-container);
+      }
+
+      #editorContainer{
+        @apply(--layout-vertical);
         @apply(--layout-flex);
         @apply(--asq-highlight-q-editor-container);
       }
@@ -84,8 +90,8 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
       <content></content>
     </div>
   
-    <div id="editorContainer">
-      <div class="layout vertical flex">
+    <div id="mainContainer">
+      <div id="editorContainer">
 
         <paper-toolbar>        
           <color-palette id="colorPalette" selected="{{colorPaletteSelected}}" on-down="_setHighlightMode" palette="{{palette}}" selected-color="{{colorPaletteSelectedColor}}"></color-palette>

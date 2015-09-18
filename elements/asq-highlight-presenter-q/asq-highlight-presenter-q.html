@@ -280,11 +280,8 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
             this.$.aceHighlightManager.updateHeatmapData(this._heatmapData || []);
 
             //start in heatmap mode
-            if(this.$.taskSelector.items){
-              this.$.taskSelector.select(0)
-            }
-
             this._onHeatmapBtnTap();
+            
           }.bind(this), 10)
         },
 

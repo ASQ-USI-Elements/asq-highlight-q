@@ -88,7 +88,7 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
         <paper-toolbar>        
           <color-palette id="colorPalette" selected="{{colorPaletteSelected}}" on-down="_setHighlightMode" palette="{{palette}}" selected-color="{{colorPaletteSelectedColor}}"></color-palette>
           <paper-icon-button id="eraseBtn" icon="editor:format-color-reset" title="Erase mode" on-tap="_setEraseMode"></paper-icon-button>
-          <span id="statusMsg">Working on "<span>{{currentTaskDescription}}</span>"</span>
+          <span id="statusMsg"><span>{{currentTaskDescription}}</span></span>
         </paper-toolbar>
 
         <div id="aceContainer">
@@ -245,9 +245,9 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
 
         _setHighlightMode: function (event, detail) {
           // already active
-          if (event.currentTarget.isActive())
+          if (this.$.colorPalette.isActive())
             return;
-          event.currentTarget.setActive(true);
+          this.$.colorPalette.setActive(true);
           this.$.eraseBtn.classList.remove('selected');
           this.$.aceHighlightManager.setHighlightMode(this.$.aceHighlightManager.HIGHLIGHT_COLOR);
         },
@@ -258,6 +258,7 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
           event.currentTarget.classList.add('selected');
           this.$.colorPalette.setActive(false);
           this.$.aceHighlightManager.setHighlightMode(this.$.aceHighlightManager.HIGHLIGHT_ERASE);
+          this.currentTaskDescription = "Eraser is on"
         },
 
         submit: function () {
@@ -293,7 +294,8 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
         },
 
         _onTaskSelect: function(event, detail){
-          this.currentTaskDescription = this.$.taskSelector.selectedItem.textContent.trim()
+          this._setHighlightMode()
+          this.currentTaskDescription = "Working on `" + this.$.taskSelector.selectedItem.textContent.trim() + "'";
         },
 
         _removeRange : function(event, detail){

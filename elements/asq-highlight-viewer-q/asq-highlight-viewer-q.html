@@ -79,11 +79,15 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
       #leContent ::content asq-solution{
         display:none;
       }
+
+      #statusMsg{
+        padding: 0 5px;
+      }
     </style>
     <div id="leContent">
       <content id="stemContent" select="asq-stem"></content>
       <content id="codeContent" select="code"></content>
-      <iron-selector id="taskSelector" selected="{{colorPaletteSelected}}" selected-attribute="active" on-iron-select="_onTaskSelect" >
+      <iron-selector id="taskSelector" selected="{{colorPaletteSelected}}" selected-attribute="active" on-iron-select="_onTaskSelect" on-tap="_onTaskSelect" >
         <content id="tasksContent" select="asq-hl-color-task"></content>
       </iron-selector>
       <content select="asq-solution"></content>
@@ -96,7 +100,7 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
         <paper-toolbar>        
           <color-palette id="colorPalette" selected="{{colorPaletteSelected}}" on-down="_setHighlightMode" palette="{{palette}}" selected-color="{{colorPaletteSelectedColor}}"></color-palette>
           <paper-icon-button id="eraseBtn" icon="editor:format-color-reset" title="Erase mode" on-tap="_setEraseMode"></paper-icon-button>
-          <span id="statusMsg"><span>{{currentTaskDescription}}</span></span>
+          <span id="statusMsg">{{currentTaskDescription}}</span>
         </paper-toolbar>
 
         <div id="aceContainer">

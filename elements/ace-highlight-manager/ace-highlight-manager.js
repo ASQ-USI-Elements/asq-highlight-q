@@ -167,9 +167,8 @@
 			},
 
 			/**
-			* Removes a marker by it's id.
+			* Removes a marker by it's corresponding RangeItem id.
 			*/
-
 			removeMarkerByRangeItemId: function(id){
 				if(typeof id != "string") return;
 				
@@ -192,6 +191,7 @@
 	        this.aceEditSession.removeMarker(r.id)
 	        this.removeRangeItemByMarkerId(r.id)
 	      }.bind(this));
+
 
 	      ranges[colorName].forEach(function(r){
 	        var marker = this.aceEditSession.getMarkers()[r.id]
@@ -386,6 +386,7 @@
 		    selRange.id = this.lastMarker;
 		    this.addRangeItem(markers[this.lastMarker], this.lastMarker, this.selectionColor.color);
 		    this.mergeColor(this.selectionColor.color);
+
 		    this.populateOccurenceItems();
 		  },
 
@@ -480,24 +481,24 @@
 		  },
 
 
-		  rangeMinus: function(range1, range2) {
-		    var resultstart, resultend;
+		  // rangeMinus: function(range1, range2) {
+		  //   var resultstart, resultend;
 		   
-		    if ((range1.start.row == range2.start.row) && (range1.start.column == range2.start.column)) {
-		        resultstart = minimum(range1.end, range2.end);
-		        resultend = maximum(range1.end, range2.end);
+		  //   if ((range1.start.row == range2.start.row) && (range1.start.column == range2.start.column)) {
+		  //       resultstart = minimum(range1.end, range2.end);
+		  //       resultend = maximum(range1.end, range2.end);
 		        
-		    } else { //MARGARITA  do you need the if inside the else here?
-		        if ((range1.end.row == range2.end.row) && (range1.end.column == range2.end.column)) {
-		        resultstart = minimum(range1.start, range2.start);
-		        resultend = maximum(range1.start, range2.start);
+		  //   } else { //MARGARITA  do you need the if inside the else here?
+		  //       if ((range1.end.row == range2.end.row) && (range1.end.column == range2.end.column)) {
+		  //       resultstart = minimum(range1.start, range2.start);
+		  //       resultend = maximum(range1.start, range2.start);
 		        
-		        }
-		    }
+		  //       }
+		  //   }
 
-		    return new Range(resultstart.row, resultstart.column,
-		                     resultend.row, resultend.column);
-		  },
+		  //   return new Range(resultstart.row, resultstart.column,
+		  //                    resultend.row, resultend.column);
+		  // },
 
 		  populateOccurenceItems: function(){
 		    var occurences = this.getOccurences();
@@ -538,10 +539,12 @@
 
 		  updateRangeItemTextByMarkerId: function(id, text){
 		  	var items = this.rangeItems;
+
 		  	for (var i=0, l= items.length; i<l; i++){
 		  		if(items[i].id ==  this.rangeIdPrefix+id){
-		  			items[i].summary = truncate(text, 30,'…');
-		      	items[i].text = text;
+		  			//need to do it this way for polymer
+		  			this.set('rangeItems.'+ i +'.summary', truncate(text, 30,'…'));
+		  			this.set('rangeItems.'+ i +'.text', text);
 		  			return;
 		  		}
 		  	}

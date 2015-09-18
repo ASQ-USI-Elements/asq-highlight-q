@@ -363,6 +363,21 @@ var Range = ace.require('ace/range').Range
 	    this.heatmapItems = [];
 	  },
 
+	  /**
+	  * Remove markers by color
+	  * 
+	  */
+	  removeMarkersByColor: function(colorName){
+	  	var ranges = this.getHighlightRanges();
+	    if(! ranges[colorName]) return;
+
+      ranges[colorName].forEach( function(r){
+        this.aceEditSession.removeMarker(r.id)
+        this.removeRangeItemByMarkerId(r.id)
+      }.bind(this));
+
+	  },
+
 
 	  /**
 	  * Erases Markers

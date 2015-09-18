@@ -52,9 +52,10 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
         --paper-toolbar-color: #000;  
       }
 
-      #container{
+      #editorContainer{
         @apply(--layout-horizontal);
         @apply(--layout-flex);
+        @apply(--asq-highlight-q-editor-container);
       }
 
       #aceContainer{
@@ -66,6 +67,7 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
         overflow-y: scroll;
         background: #f8f8f8;
         @apply(--layout-flex);
+        @apply(--asq-highlight-q-inspector);
       }
 
       #leContent ::content asq-solution{
@@ -82,7 +84,7 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
       <content></content>
     </div>
   
-    <div id="container">
+    <div id="editorContainer">
       <div class="layout vertical flex">
 
         <paper-toolbar>        

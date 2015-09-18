@@ -29,7 +29,6 @@
     "asq-base": "ASQ-USI-Elements/asq-base#feat-polymer-1",
     "asq-solution": "ASQ-USI-Elements/asq-solution#feat-polymer-1",
     "asq-stem": "ASQ-USI-Elements/asq-stem#feat-polymer-1",
-    "bootstrap": "~3.3.1",
     "iron-dropdown": "PolymerElements/iron-dropdown#~1.0.5",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#~1.0.3",
     "iron-icon": "PolymerElements/iron-icon#~1.0.4",

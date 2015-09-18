@@ -18,6 +18,7 @@
 <link rel="import" href="../asq-hl-color-task/asq-hl-color-task.html">
 <link rel="import" href="../color-palette.html">
 <link rel="import" href="./asq-highlight-presenter-q-styles.html">
+<link rel="import" href="../../button-styles.html">
 
 <!--
 Presenter version of asq-highlight-q. Normally this element is used by an `<asq-highlight-q>` element when it's `role` attribute is equal to `presenter`.
@@ -45,6 +46,7 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
 
   <template>
     <style include="asq-highlight-presenter-q-styles"></style>
+    <style include="button-styles"></style>
     <style>
       :host{
         @apply(--layout-vertical);
@@ -255,10 +257,10 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         },
 
         attached: function(){
-          setTimeout(function(){
-            this.$.aceHighlightManager.updateHeatmapData(this._heatmapData);
-          }.bind(this), 1);
           this._populatePalette();
+          setTimeout(function(){
+            this.$.aceHighlightManager.updateHeatmapData(this._heatmapData || []);
+          }.bind(this), 1);
         },
 
         ready: function () {
@@ -323,18 +325,25 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         },
 
         _onHeatmapBtnTap: function (event, detail) {
+          this.$.heatmapBtn.classList.add('selected');
+          this.$.solutionBtn.classList.remove('selected');
           this.displayMode = 'heatmap';
           this._showHeatmap();
         },
 
         _onSolutionBtnTap: function (event, detail) {
+          this.$.solutionBtn.classList.add('selected');
+          this.$.heatmapBtn.classList.remove('selected');
           this.displayMode = 'solution';
           this._applyHueRanges(this.solution)
         },
 
         _selectedSubmissionItemChanged: function(newItem, old){
-          this.displayMode = 'ranges';
           if(!newItem) return;
+
+          this.$.solutionBtn.classList.remove('selected');
+          this.$.heatmapBtn.classList.remove('selected');
+
           this.displayMode = 'ranges';
           this._applyHueRanges(newItem.submission)
         },

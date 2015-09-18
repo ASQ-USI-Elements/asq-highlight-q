@@ -166,6 +166,18 @@
 		  	this.aceEditSession.selection.clearSelection();
 			},
 
+			/**
+			* Removes a marker by it's id.
+			*/
+
+			removeMarkerByRangeItemId: function(id){
+				if(typeof id != "string") return;
+				
+				id = id.replace(this.rangeIdPrefix, '');
+				this.aceEditSession.removeMarker(id)
+				this.removeRangeItemByMarkerId(id)
+			},
+
 		  /**
 		  * merge specific color
 		  * 

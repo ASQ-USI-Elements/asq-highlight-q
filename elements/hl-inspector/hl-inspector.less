@@ -1,21 +1,67 @@
 // mixins
-@import "../../less/lib/lesshat.less";
+// @import "../../less/lib/lesshat.less";
 
-//boostrap
-@import "../../../bootstrap/less/bootstrap.less"; 
-
-paper-tabs paper-tab{
-  cursor: pointer;
+.badge {
+  display: inline-block;
+  min-width: 10px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffffff;
+  line-height: 1;
+  vertical-align: baseline;
+  white-space: nowrap;
+  text-align: center;
+  background-color: #777777;
+  border-radius: 10px;
 }
 
-paper-tab[active]{
-  background: #fff;
+code {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #c7254e;
+  background-color: #f9f2f4;
+  border-radius: 4px;
+}
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: #333333;
+  background-color: #f5f5f5;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+
+  code {
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+    white-space: pre-wrap;
+    background-color: transparent;
+    border-radius: 0;
+  }
+}
+
+.he-highlighted-code {
+  margin-top: 4px;
+  background-color: #f5f2f0;
+  display: none;
+}
+
+.expanded .he-highlighted-code {
+  display: block;
 }
 
 button.he-code-toggle{
   background:none;
   border:none;
   outline:none;
+  cursor: pointer;
 
   > iron-icon[icon="arrow-drop-up"] {
     display:none;
@@ -35,14 +81,7 @@ button.he-code-toggle{
 .he-highlighted-summary {
   font-family: "DejaVu LGC Sans Mono", "DejaVu Sans Mono", Menlo, Monaco, Consolas, "Courier New", monospace;
 }
-.he-highlighted-code {
-  margin-top: 4px;
-  background: #f5f2f0;
-  display: none;
-}
-.expanded .he-highlighted-code {
-  display: block;
-}
+
 
 li.list-group-item:hover, li.list-group-item:focus {
 background-color: #f5f5f5;

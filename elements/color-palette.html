@@ -4,10 +4,12 @@
 <link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-selector/iron-selector.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
-
+<link rel="import" href="../button-styles.html">
+    
 <dom-module id="color-palette">
   <template>
-
+    
+    <style include="button-styles"></style>
     <style>
       /* manually position the dropdown below the trigger */
       #dropdown {
@@ -47,7 +49,7 @@
     <div style="position: relative">
       <paper-icon-button id="trigger" touch-action="none" on-tap="_toggleDropdown">
       </paper-icon-button>
-      <iron-dropdown id="dropdown" vertical-offset="42" horizontal-offset="2">
+      <iron-dropdown id="dropdown" vertical-offset="44" horizontal-offset="2">
         <iron-selector class="dropdown-content" id="colorSelector" selected="{{selected}}" on-iron-select="_onColorSelected">
           <template is="dom-repeat" items="{{palette}}" as="item">
             <div class="color-item" style$="{{computeStyle(item)}}"><iron-icon icon="check"></iron-icon></div>
@@ -159,9 +161,9 @@
 
       setActive: function (val){
         if(val === true){
-          this.$.trigger.setAttribute('active', '');
+          this.$.trigger.classList.add('selected');
         }else if(val === false){
-          this.$.trigger.removeAttribute('active');
+          this.$.trigger.classList.remove('selected');
         }
         return;
       }

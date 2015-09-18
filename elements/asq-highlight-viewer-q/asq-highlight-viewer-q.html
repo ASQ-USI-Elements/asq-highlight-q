@@ -16,6 +16,7 @@
 <link rel="import" href="../color-palette.html">
 <link rel="import" href="../hl-inspector/hl-inspector.html">
 <link rel="import" href="./asq-highlight-viewer-q-styles.html">
+<link rel="import" href="../../button-styles.html">
 
 <!--
 Viewer version of asq-highlight-q. Normally this element is used by an `<asq-highlight-q>` element when it's `role` attribute is equal to `viewer`.
@@ -42,6 +43,7 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
 <dom-module id="asq-highlight-viewer-q">
   <template>
     <style include="asq-highlight-viewer-q-styles"></style>
+    <style include="button-styles"></style>
     <style>
       :host{
         @apply(--layout-vertical);
@@ -96,7 +98,7 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
 
       </div>
       
-      <hl-inspector id="inspector" range-items="{{aceHighlightManagerRangeItems}}" occurence-items="{{aceHighlightManagerOccurenceItems}}"></hl-inspector>
+      <hl-inspector id="inspector" range-items="{{aceHighlightManagerRangeItems}}" occurence-items="{{aceHighlightManagerOccurenceItems}}" on-hl-inspector-remove-range="_removeRange"></hl-inspector>
       
     </div>
 
@@ -242,15 +244,14 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
           if (event.currentTarget.isActive())
             return;
           event.currentTarget.setActive(true);
-          this.$.eraseBtn.removeAttribute('active');
+          this.$.eraseBtn.classList.remove('selected');
           this.$.aceHighlightManager.setHighlightMode(this.$.aceHighlightManager.HIGHLIGHT_COLOR);
         },
 
         _setEraseMode: function (event, detail) {
-          // already active
-          if (event.currentTarget.hasAttribute('active'))
+          if (event.currentTarget.classList.contains('selected'))
             return;
-          event.currentTarget.setAttribute('active', '');
+          event.currentTarget.classList.add('selected');
           this.$.colorPalette.setActive(false);
           this.$.aceHighlightManager.setHighlightMode(this.$.aceHighlightManager.HIGHLIGHT_ERASE);
         },
@@ -289,6 +290,10 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
 
         _onTaskSelect: function(event, detail){
           this.currentTaskDescription = this.$.taskSelector.selectedItem.textContent.trim()
+        },
+
+        _removeRange : function(event, detail){
+          this.$.aceHighlightManager.removeMarkerByRangeItemId(detail.rangeId);
         }
 
       });

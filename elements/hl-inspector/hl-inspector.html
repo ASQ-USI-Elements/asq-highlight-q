@@ -1,15 +1,19 @@
 <link rel="import" href="../../../polymer/polymer.html">
-<link rel="import" href="../../../paper-tabs/paper-tabs.html">
-<link rel="import" href="../../../paper-tabs/paper-tab.html">
-<link rel="import" href="../../../iron-pages/iron-pages.html">
+<link rel="import" href="../../../iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../../../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../iron-icons/editor-icons.html">
+<link rel="import" href="../../../iron-pages/iron-pages.html">
+<link rel="import" href="../../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../paper-item/paper-item.html">
+<link rel="import" href="../../../paper-tabs/paper-tab.html">
+<link rel="import" href="../../../paper-tabs/paper-tabs.html">
 
 <link rel="import" href="./hl-inspector-styles.html">
 
 <dom-module id="hl-inspector">
   <template>
     <style>
-
+      
       :host{
         --paper-tabs-selection-bar-color: #333;
       }
@@ -24,7 +28,29 @@
         @apply(--layout-center-center);
         @apply(--layout-inline);
         @apply(--layout-flex);
+        cursor: pointer;
       }
+
+      paper-tab[active]{
+        background: #fff;
+      }
+
+      paper-item{
+        padding-top: 12px;
+        padding-bottom: 4px;
+        background-color: white;
+        cursor: pointer;
+        @apply(--shadow-elevation-2dp);
+      }
+
+      .remove-range-btn{
+        color: #616161;
+      }
+
+      .remove-range-btn:hover, .remove-range-btn:active{
+        color: #000;
+      }
+
     </style>
     <style include="hl-inspector-styles"></style>
 
@@ -37,29 +63,38 @@
 
         <div>
           <template is="dom-repeat" items="{{rangeItems}}" as="r">
-            <li class="collapsed list-group-item" id="{{r.id}}" on-dblclick="expandClick">
-              <!-- <span class="label label-default {{r.colorClass}}">&nbsp;</span> -->
-              <iron-icon id="coreIcon" icon="" aria-label="color" role="img" class$="{{r.colorClass}}"></iron-icon>
-              <button class="he-code-toggle" on-tap="expandClick">
-                <iron-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></iron-icon><iron-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></iron-icon>
-              </button>                
-              <code class="he-highlighted-summary">{{r.summary}}</code>
-              <span class="badge">{{r.range}}</span>
-              <pre class="he-highlighted-code"><code>{{r.text}}</code></pre>
-            </li>
+            <paper-item id$="[[r.id]]" for="[[r.id]]" on-dblclick="expandClick">
+              <paper-item-body two-line class="layout vertical flex">
+                <div class="layout horizontal flex center">
+                  <iron-icon id="coreIcon" icon="" aria-label="color" role="img" class$="[[r.colorClass]]"></iron-icon>
+                  <button class="he-code-toggle" for="[[r.id]]" on-tap="expandClick">
+                    <iron-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></iron-icon><iron-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></iron-icon>
+                  </button>
+                  <div class="flex"><code class="he-highlighted-summary">[[r.summary]]</code></div>
+                  <div><span class="badge">[[r.range]]</span></div>
+                  <div><paper-icon-button class="remove-range-btn" icon="icons:clear" for-range-id="[[r.id]]" on-tap="_onRemoveRangeTap" title="Remove range"></paper-icon-button>
+                  </div>
+                </div>
+                <div><pre class="he-highlighted-code"><code>[[r.text]]</code></pre></div>
+              </paper-item-body>
+            </paper-item>
           </template>
         </div>
 
         <div>
           <template is="dom-repeat" items="{{occurenceItems}}" as="o">
-            <li class="collapsed list-group-item" on-dblclick="expandClick">
-              <button class="he-code-toggle" on-tap="expandClick">
-                <iron-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></iron-icon><iron-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></iron-icon>
-              </button>            
-              <code class="he-highlighted-summary">{{o.summary}}</code>
-              <span class$="{{computeClass(o)}}">{{o.occurences}}</span>
-              <pre class="he-highlighted-code"><code>{{o.text}}</code></pre>
-            </li>
+            <paper-item id$="[[_computeOccurenceItemId(index)]]" for="[[_computeOccurenceItemId(index)]]" class="list-group-item" on-dblclick="expandClick">
+              <paper-item-body two-line class="layout vertical flex">
+                <div class="layout horizontal flex">
+                  <button class="he-code-toggle" for="[[_computeOccurenceItemId(index)]]" on-tap="expandClick">
+                    <iron-icon icon="arrow-drop-down" aria-label="toggle-down" role="toggle"></iron-icon><iron-icon icon="arrow-drop-up" aria-label="toggle-up" role="toggle"></iron-icon>
+                  </button>            
+                  <div class="flex"><code class="he-highlighted-summary">[[o.summary]]</code></div>
+                  <div><span class$="{{_computeBadgeClass(o)}}">[[o.occurences]]</span></div>
+                </div>
+                <div><pre class="he-highlighted-code"><code>[[o.text]]</code></pre></div>
+              </paper-item-body>
+            </paper-item>
           </template>
         </div>
       </iron-pages>
@@ -93,14 +128,20 @@
 
       expandClick: function (evt, detail) {
         evt.preventDefault();
-        var nodeToToggle = event.currentTarget;
-        if (nodeToToggle.tagName == 'BUTTON') {
-          nodeToToggle = nodeToToggle.parentNode;
-        }
+        var forId = event.currentTarget.for;
+        var nodeToToggle = Polymer.dom(this.root).querySelector("#" + forId)
         nodeToToggle.classList.toggle('expanded');
       },
 
-      computeClass: function (o) {
+      _onRemoveRangeTap: function(evt, detail){
+        this.fire('hl-inspector-remove-range', { rangeId: evt.currentTarget.forRangeId })
+      },
+
+      _computeOccurenceItemId: function(idx){
+        return 'oc-item-' + (idx + 1);
+      },
+
+      _computeBadgeClass: function (o) {
         return 'badge ' + o.colorClass;
       }
     });

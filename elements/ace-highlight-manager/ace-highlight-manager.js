@@ -388,6 +388,7 @@
 		    this.mergeColor(this.selectionColor.color);
 
 		    this.populateOccurenceItems();
+		    this.fire('highlightrangeschanged', {ranges: this.getHighlightRanges()})
 		  },
 
 		  /**

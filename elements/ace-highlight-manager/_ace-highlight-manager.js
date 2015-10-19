@@ -342,6 +342,7 @@ var Range = ace.require('ace/range').Range
 	    this.mergeColor(this.selectionColor.color);
 
 	    this.populateOccurenceItems();
+	    this.fire('highlightrangeschanged', {ranges: this.getHighlightRanges()})
 	  },
 
 	  /**

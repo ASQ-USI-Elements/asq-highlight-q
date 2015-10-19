@@ -121,8 +121,8 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         </paper-toolbar>
 
         <div id="aceContainer">
-          <ace-element id="codeEditor" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" wrap="{{wrap}}">{{value}}</ace-element>
-          <ace-highlight-manager id="aceHighlightManager" colors="{{palette}}" selection-color="{{colorPaletteSelectedColor}}"></ace-highlight-manager>
+          <ace-element id="codeEditor" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" wrap="{{wrap}}">{{aceValue}}</ace-element>
+          <ace-highlight-manager id="aceHighlightManager" colors="{{palette}}" selection-color="{{colorPaletteSelectedColor}}" on-highlightrangeschanged="_highlightRangesChanged"></ace-highlight-manager>
         </div>
       </div>
 
@@ -151,6 +151,14 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         behaviors: [ASQ.asqQuestionElementBehavior],
 
         properties: {
+
+          /**
+           * The user selected ranges.
+           */
+          value: {
+            type: Object,
+            notify: true
+          },
           
           disabled: {
             type: Boolean,
@@ -203,7 +211,7 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
           /**
            * The value property of the ace-element.
            */
-          value: {
+          aceValue: {
             type: String,
             value: null,
             notify: true,
@@ -426,6 +434,10 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
 
         _onSelectedTaskChanged: function (event, detail) {
          this._draw()
+        },
+
+        _highlightRangesChanged: function(event, detail){
+          this.value = detail.ranges;
         },
 
         _draw: function(){

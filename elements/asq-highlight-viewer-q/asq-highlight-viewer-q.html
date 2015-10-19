@@ -104,8 +104,8 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
         </paper-toolbar>
 
         <div id="aceContainer">
-          <ace-element id="codeEditor" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" wrap="{{wrap}}">{{value}}</ace-element>
-          <ace-highlight-manager id="aceHighlightManager" colors="{{palette}}" selection-color="{{colorPaletteSelectedColor}}" range-items="{{aceHighlightManagerRangeItems}}" occurence-items="{{aceHighlightManagerOccurenceItems}}"></ace-highlight-manager>
+          <ace-element id="codeEditor" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" wrap="{{wrap}}">{{aceValue}}</ace-element>
+          <ace-highlight-manager id="aceHighlightManager" colors="{{palette}}" selection-color="{{colorPaletteSelectedColor}}" range-items="{{aceHighlightManagerRangeItems}}" occurence-items="{{aceHighlightManagerOccurenceItems}}" on-highlightrangeschanged="_highlightRangesChanged"></ace-highlight-manager>
         </div>
 
       </div>
@@ -124,6 +124,14 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
         behaviors: [ASQ.asqQuestionElementBehavior],
 
         properties: {
+          /**
+           * The user selected ranges.
+           */
+          value: {
+            type: Object,
+            notify: true
+          },
+
           /**
            * Set to true to style the element as disabled.
            * Binded to `readonly` of ace-editor.
@@ -178,7 +186,7 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
           /**
            * The value property of the ace-element.
            */
-          value: {
+          aceValue: {
             type: String,
             value: null,
             notify: true,
@@ -274,7 +282,7 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
         },
 
         submit: function () {
-          var submission = this.$.aceHighlightManager.getHighlightRanges();
+          var submission = this.value;
           return {
             questionUid: this.uid,
             timestamp: new Date(),
@@ -312,6 +320,10 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
 
         _removeRange : function(event, detail){
           this.$.aceHighlightManager.removeMarkerByRangeItemId(detail.rangeId);
+        },
+
+        _highlightRangesChanged: function(event, detail){
+          this.value = detail.ranges;
         }
 
       });

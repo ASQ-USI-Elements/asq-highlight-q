@@ -96,14 +96,14 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
 
     <!-- Viewer -->
     <template is="dom-if" if="{{hasRole(role, roles.VIEWER)}}" restamp="true">
-      <asq-highlight-viewer-q role="viewer" uid="[[uid]]" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" value="{{value}}" wrap="{{wrap}}" event-bus="[[eventBus]]">
+      <asq-highlight-viewer-q role="viewer" uid="[[uid]]" value="{{value}}" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" ace-value="{{aceValue}}" wrap="{{wrap}}" event-bus="[[eventBus]]">
         <content></content>
       </asq-highlight-viewer-q>
     </template>
     
     <!-- Presenter -->
    <template is="dom-if" if="{{hasRole(role, roles.PRESENTER)}}" restamp="true">
-      <asq-highlight-presenter-q role="presenter" uid="[[uid]]" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" value="{{value}}" wrap="{{wrap}}" event-bus="[[eventBus]]">
+      <asq-highlight-presenter-q role="presenter" uid="[[uid]]" value="{{value}}" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" ace-value="{{aceValue}}" wrap="{{wrap}}" event-bus="[[eventBus]]">
         <content></content>
       </asq-highlight-presenter-q>
     </template>
@@ -118,6 +118,14 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
         behaviors: [ASQ.asqQuestionElementBehavior],
 
         properties: {
+          /**
+           * The user selected ranges.
+           */
+          value: {
+            type: Object,
+            notify: true,
+            observer: "_valueChanged"
+          },
           /**
            * Set to true to style the element as disabled.
            * Binded to `readonly` of ace-editor.
@@ -172,7 +180,7 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
           /**
            * The value property of the ace-element.
            */
-          value: {
+          aceValue: {
             type: String,
             value: null,
             notify: true,
@@ -199,10 +207,10 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
         },
 
         ready: function () {
-          if (!this.value) {
+          if (!this.aceValue) {
             var code = Polymer.dom(this).querySelector('code');
             if (code) {
-              this.value = code.textContent;
+              this.aceValue = code.textContent;
             }
           }
 
@@ -225,6 +233,10 @@ ASQ-Highlight element can be used to to create, deliver and validate highlightin
 
         hasRole: function (role, candiate) {
           return role == candiate;
+        },
+
+        _valueChanged:function(newVal, oldVal){
+          this.fire('questioninput', newVal)
         }
       });
     }());

@@ -777,9 +777,14 @@
 	        }
 
 	        //check if element is between range
-	        if(i >= range.start.row && i <= range.end.row && j >= range.start.column && j < range.end.column){
+	        // TODO: consider using the build Range methods like contains
+	        if(i > range.start.row && i < range.end.row){
 	          hueWeights[i][j] = hueWeights[i][j] + (1 - hueWeights[i][j]) / n;
-	        }else{
+	        }else if(i == range.start.row && j >= range.start.column
+	          || i == range.end.row && j < range.end.column){
+	          hueWeights[i][j] = hueWeights[i][j] + (1 - hueWeights[i][j]) / n;
+	        }
+	        else{
 	          hueWeights[i][j] = hueWeights[i][j] -  hueWeights[i][j] / n;
 	        }
 

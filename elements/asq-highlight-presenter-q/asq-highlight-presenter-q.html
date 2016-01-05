@@ -2,6 +2,7 @@
 <link rel="import" href="../../../ace-element/ace-element.html">
 <link rel="import" href="../../../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../../iron-icons/editor-icons.html">
+<link rel="import" href="../../../iron-icons/av-icons.html">
 <link rel="import" href="../../../iron-list/iron-list.html">
 <link rel="import" href="../../../iron-selector/iron-selector.html">
 <link rel="import" href="../../../paper-icon-button/paper-icon-button.html">
@@ -118,6 +119,7 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
           <paper-icon-button id="heatmapBtn" icon="assessment" on-tap="_onHeatmapBtnTap" title="Show heatmap"></paper-icon-button>          
           <span id="statusMsg">{{statusMessage}}</span>
           <paper-icon-button id="solutionBtn" icon="done-all" on-tap="_onSolutionBtnTap" title="Show Solution"></paper-icon-button>
+          <paper-icon-button id="clearBtn" icon="av:not-interested" on-tap="_onClearBtnTap" title="Clear Ranges"></paper-icon-button>
         </paper-toolbar>
 
         <div id="aceContainer">
@@ -230,7 +232,7 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
 
           displayMode: {
             type: String,
-            value: 'heatmap',
+            value: '',
             notify: true,
             observer: '_displayModeChanged',
             reflectToAttribute: true,
@@ -286,9 +288,6 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
             this.$.codeEditor.editor.resize();
             this.$.aceHighlightManager.editor = this.$.codeEditor.editor; 
             this.$.aceHighlightManager.updateHeatmapData(this._heatmapData || []);
-
-            //start in heatmap mode
-            this._onHeatmapBtnTap();
             
           }.bind(this), 10)
         },
@@ -358,6 +357,13 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
           this.$.heatmapBtn.classList.remove('selected');
           this.displayMode = 'solution';
           this._applyHueRanges(this.solution)
+        },
+
+        _onClearBtnTap: function (event, detail) {
+          this.$.solutionBtn.classList.remove('selected');
+          this.$.heatmapBtn.classList.remove('selected');
+          this.displayMode = '';
+          this.$.aceHighlightManager.removeAllMarkers();
         },
 
         _selectedSubmissionItemChanged: function(newItem, old){

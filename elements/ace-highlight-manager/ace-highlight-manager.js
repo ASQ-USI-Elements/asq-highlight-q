@@ -573,6 +573,7 @@
 		  			this.splice('rangeItems', i, 1);
 				  	//update Occurence Items
 				  	this.populateOccurenceItems();
+				  	this.fire('highlightrangeschanged', {ranges: this.getHighlightRanges()})
 		  			return;
 		  		}
 		  	}
@@ -649,6 +650,7 @@
 		    		range.id = newMarkerId;
 		    		this.addRangeItem(this.aceEditSession.getMarkers()[newMarkerId], newMarkerId, key);
 		    		this.populateOccurenceItems();
+		    		this.fire('highlightrangeschanged', {ranges: this.getHighlightRanges()})
 		    	}.bind(this));
 		    }.bind(this));
 		  }

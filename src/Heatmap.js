@@ -69,13 +69,15 @@ var Heatmap = module.exports = function(options){
     // not overlapping ranges
     for(var i = 0, lrow = hueWeights.length; i < lrow; i++){
       // check if we need to move to the next range based on row
-      if (range.end.row < i && rIndex < (ranges.length - 1)){
+      if (range.end.row < i){
+        if(rIndex == ranges.length - 1) break;
         range = ranges[++rIndex];
       }
 
       for (var j=0, lcol = hueWeights[i].length; j < lcol; j++){
         // check if we need to move to the next range based on column
-        if (range.end.row == i && range.end.column < j && (rIndex < ranges.length - 1)){
+        if (range.end.row == i && range.end.column < j ){
+          if(rIndex == ranges.length - 1) break;
           range = ranges[++rIndex];
         }
 

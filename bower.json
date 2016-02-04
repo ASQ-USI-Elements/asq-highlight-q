@@ -29,24 +29,24 @@
     "asq-base": "ASQ-USI-Elements/asq-base#master",
     "asq-solution": "ASQ-USI-Elements/asq-solution#master",
     "asq-stem": "ASQ-USI-Elements/asq-stem#master",
-    "iron-dropdown": "PolymerElements/iron-dropdown#~1.0.6",
-    "iron-flex-layout": "PolymerElements/iron-flex-layout#~1.0.5",
-    "iron-icon": "PolymerElements/iron-icon#~1.0.7",
-    "iron-icons": "PolymerElements/iron-icons#~1.0.4",
-    "iron-list": "polymerelements/iron-list#~1.1.5",
-    "iron-pages": "PolymerElements/iron-pages#~1.0.3",
-    "iron-selector": "PolymerElements/iron-selector#~1.0.8",
-    "paper-dialog": "PolymerElements/paper-dialog#~1.0.2",
-    "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.5",
-    "paper-input": "PolymerElements/paper-input#~1.0.18",
-    "paper-item": "polymerelements/paper-item#~1.0.7",
-    "paper-menu": "PolymerElements/paper-menu#~1.1.1",
-    "paper-tabs": "PolymerElements/paper-tabs#~1.0.10",
-    "paper-toolbar": "PolymerElements/paper-toolbar#~1.0.4",
-    "polymer": "Polymer/Polymer#~1.2.1"
+    "iron-dropdown": "PolymerElements/iron-dropdown#^1.0.6",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.5",
+    "iron-icon": "PolymerElements/iron-icon#^1.0.7",
+    "iron-icons": "PolymerElements/iron-icons#^1.0.4",
+    "iron-list": "polymerelements/iron-list#^1.1.5",
+    "iron-pages": "PolymerElements/iron-pages#^1.0.3",
+    "iron-selector": "PolymerElements/iron-selector#^1.0.8",
+    "paper-dialog": "PolymerElements/paper-dialog#^1.0.2",
+    "paper-icon-button": "PolymerElements/paper-icon-button#^1.0.5",
+    "paper-input": "PolymerElements/paper-input#^1.0.18",
+    "paper-item": "polymerelements/paper-item#^1.0.7",
+    "paper-menu": "PolymerElements/paper-menu#^1.1.1",
+    "paper-tabs": "PolymerElements/paper-tabs#^1.0.10",
+    "paper-toolbar": "PolymerElements/paper-toolbar#^1.0.4",
+    "polymer": "Polymer/Polymer#^1.2.1"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#~1.0.9",
-    "web-component-tester": "Polymer/web-component-tester#~3.3.29"
+    "iron-component-page": "PolymerElements/iron-component-page#^1.1.4",
+    "web-component-tester": "Polymer/web-component-tester#^4.2.0"
   }
 }

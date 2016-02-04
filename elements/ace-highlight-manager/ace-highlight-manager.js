@@ -135,6 +135,8 @@
 				 this.oldRange = null;
 				 this.oldstart = null;
 				 this.lastMarker = null;
+				 this._isMouseDown = false;
+				 this._haveToApplyHighlightChange = false;
 				 this.rangeIdPrefix = 'he-range-item-';
 
 				 if(this.editor){
@@ -156,6 +158,22 @@
 
 		    this.clearSelectionBinded = this.clearSelection.bind(this);
 		    this.onChangeSelectionBinded = this.onChangeSelection.bind(this);
+
+		    // track if mouse if down or not
+		    this.editor.on("mousedown", function(e){
+		    	console.log("mousedown")
+		    	this._isMouseDown = true;
+		    }.bind(this))
+
+		    // when the mouse up could mean the end of a selection
+		    this.editor.on("mouseup", function(e){
+		    	console.log("mouseup")
+		    	this._isMouseDown = false;
+		    	if(this._haveToApplyHighlightChange){
+		    	this._haveToApplyHighlightChange = false;
+		  		this._applyHighlightChange();
+		    	}
+		    }.bind(this))
 		    
 		    ///setup ace editor
 		    this.aceEditSession = this.editor.getSession();
@@ -378,7 +396,30 @@
 		    }.bind(this,e), 1)
 		  },
 
+		  // highlightChange: function(){
+		  // 	console.log("highlightchange")
+		  //   var selRange = this.aceEditSession.selection.getRange()
+		  //     , markers = this.aceEditSession.getMarkers();
+
+		  //   this.lastMarker = this.addMarker(selRange, 'ace_highlight marker-' + this.selectionColor.color);
+		  //   selRange.id = this.lastMarker;
+		  //   this.addRangeItem(markers[this.lastMarker], this.lastMarker, this.selectionColor.color);
+		  //   this.mergeColor(this.selectionColor.color);
+
+		  //   this.populateOccurenceItems();
+		  //   this.fire('highlightrangeschanged', {ranges: this.getHighlightRanges()})
+		  // },
+
 		  highlightChange: function(){
+		  	this._haveToApplyHighlightChange = true;
+		  	if(this._isMouseDown == false){
+		  		this._haveToApplyHighlightChange = false;
+		  		this._applyHighlightChange();
+		  	}
+		  },
+
+		  _applyHighlightChange: function(){
+		  	console.log("_applyHighlightChange")
 		    var selRange = this.aceEditSession.selection.getRange()
 		      , markers = this.aceEditSession.getMarkers();
 

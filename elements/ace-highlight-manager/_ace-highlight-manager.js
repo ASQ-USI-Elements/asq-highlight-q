@@ -115,13 +115,11 @@ var Range = ace.require('ace/range').Range
 
 	    // track if mouse if down or not
 	    this.editor.on("mousedown", function(e){
-	    	console.log("mousedown")
 	    	this._isMouseDown = true;
 	    }.bind(this))
 
 	    // when the mouse up could mean the end of a selection
 	    this.editor.on("mouseup", function(e){
-	    	console.log("mouseup")
 	    	this._isMouseDown = false;
 	    	if(this._haveToApplyHighlightChange){
 	    	this._haveToApplyHighlightChange = false;
@@ -350,20 +348,6 @@ var Range = ace.require('ace/range').Range
 	    }.bind(this,e), 1)
 	  },
 
-	  // highlightChange: function(){
-	  // 	console.log("highlightchange")
-	  //   var selRange = this.aceEditSession.selection.getRange()
-	  //     , markers = this.aceEditSession.getMarkers();
-
-	  //   this.lastMarker = this.addMarker(selRange, 'ace_highlight marker-' + this.selectionColor.color);
-	  //   selRange.id = this.lastMarker;
-	  //   this.addRangeItem(markers[this.lastMarker], this.lastMarker, this.selectionColor.color);
-	  //   this.mergeColor(this.selectionColor.color);
-
-	  //   this.populateOccurenceItems();
-	  //   this.fire('highlightrangeschanged', {ranges: this.getHighlightRanges()})
-	  // },
-
 	  highlightChange: function(){
 	  	this._haveToApplyHighlightChange = true;
 	  	if(this._isMouseDown == false){
@@ -373,7 +357,6 @@ var Range = ace.require('ace/range').Range
 	  },
 
 	  _applyHighlightChange: function(){
-	  	console.log("_applyHighlightChange")
 	    var selRange = this.aceEditSession.selection.getRange()
 	      , markers = this.aceEditSession.getMarkers();
 
@@ -491,26 +474,6 @@ var Range = ace.require('ace/range').Range
 	    return removed;
 	  },
 
-
-	  // rangeMinus: function(range1, range2) {
-	  //   var resultstart, resultend;
-	   
-	  //   if ((range1.start.row == range2.start.row) && (range1.start.column == range2.start.column)) {
-	  //       resultstart = minimum(range1.end, range2.end);
-	  //       resultend = maximum(range1.end, range2.end);
-	        
-	  //   } else { //MARGARITA  do you need the if inside the else here?
-	  //       if ((range1.end.row == range2.end.row) && (range1.end.column == range2.end.column)) {
-	  //       resultstart = minimum(range1.start, range2.start);
-	  //       resultend = maximum(range1.start, range2.start);
-	        
-	  //       }
-	  //   }
-
-	  //   return new Range(resultstart.row, resultstart.column,
-	  //                    resultend.row, resultend.column);
-	  // },
-
 	  populateOccurenceItems: function(){
 	    var occurences = this.getOccurences();
 	    this.occurenceItems = [];
@@ -603,13 +566,6 @@ var Range = ace.require('ace/range').Range
       for(var hue in this.heatmapData){
         this.addHeatmapItem(hue);
       }
-
-	    try{
-	      
-	     // $('heatmap-labels a.list-group-item:first').trigger('click')
-	    }catch(err){
-	      console.log("Error parsing ranges", err)
-	    }
 	  },
 
 	  drawHeatmap: function(hue){

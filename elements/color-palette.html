@@ -11,6 +11,11 @@
     
     <style include="button-styles"></style>
     <style>
+
+      :host[disabled]{
+        pointer-events: none;
+      }
+
       /* manually position the dropdown below the trigger */
       #dropdown {
       /*  position: absolute;*/
@@ -47,7 +52,7 @@
     </style>
 
     <div style="position: relative">
-      <paper-icon-button id="trigger" touch-action="none" on-tap="_toggleDropdown">
+      <paper-icon-button id="trigger" disabled="{{disabled}}" touch-action="none" on-tap="_toggleDropdown">
       </paper-icon-button>
       <iron-dropdown id="dropdown" vertical-offset="44" horizontal-offset="2">
         <iron-selector class="dropdown-content" id="colorSelector" selected="{{selected}}" on-iron-select="_onColorSelected">
@@ -121,6 +126,13 @@
           },
           notify: true
         },
+        disabled:{
+          type: Boolean,
+          value: false,
+          observer: '_disabledChanged',
+          reflectToAttribute: true,
+          notify: true
+        },
         selected: { 
           type: "String",
           value: '0',
@@ -135,11 +147,26 @@
 
       attached: function () {
         //this will have the color of the selected color item
-        this.cIcon = Polymer.dom(this.$.trigger.root).querySelector('iron-icon');
         if(this.selected){
           this.selectedColor = this.palette[this.selected];
           this.cIcon.style.backgroundColor = '#'+ this.selectedColor.color;
         }
+      },
+
+      _disabledChanged: function(newValue, oldValue){
+        if(!newValue && this.selected >=0){
+          this.selectedColor = this.palette[this.selected];
+          this.cIcon.style.backgroundColor = '#'+ this.selectedColor.color;
+        }else{
+          /*TODO(triglian):
+          Use material design color vars
+          */
+           this.cIcon.style.backgroundColor = '#9b9b9b';
+        }
+      },
+
+      get cIcon(){
+        return Polymer.dom(this.$.trigger.root).querySelector('iron-icon');
       },
 
       _toggleDropdown: function(){
@@ -147,8 +174,10 @@
       },
 
       _onColorSelected: function(event, detail){
-        this.cIcon.style.backgroundColor = detail.item.style.backgroundColor;
+        if(this.disabled) return;
+        // this.cIcon.style.backgroundColor = detail.item.style.backgroundColor;
         this.selectedColor = this.palette[this.selected];
+        this.cIcon.style.backgroundColor = '#'+ this.selectedColor.color;
       },
 
       computeStyle: function (item) {

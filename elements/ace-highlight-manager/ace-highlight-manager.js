@@ -62,6 +62,12 @@
 					observer: '_editorChanged',
 					notify: true
 				},
+				disabled:{
+					type: Boolean,
+					value: false,
+					observer: '_disabledChanged',
+					notify: true
+				},
 				mode:{
 					type: String,
 					value: "modeHeatmap",
@@ -96,52 +102,54 @@
 			},
 
 			ready: function(){
-				 // editor
-				 this.MODE_HIGHLIGHT = 'modeHighlight';
-				 this.MODE_EDIT_TEXT = 'modeEditText';
-				 this.MODE_HEATMAP   = 'modeHeatmap';
+				this._initialized = false;
 
-				 this.modes = Object.create(null);
-				 this.mode = 'modeHeatmap';
+				// editor
+				this.MODE_HIGHLIGHT = 'modeHighlight';
+				this.MODE_EDIT_TEXT = 'modeEditText';
+				this.MODE_HEATMAP   = 'modeHeatmap';
 
-				 this.defaultOptions = {
-				   mode: this.MODE_HEATMAP
-				 };
+				this.modes = Object.create(null);
+				this.mode = 'modeHeatmap';
+
+				this.defaultOptions = {
+				 mode: this.MODE_HEATMAP
+				};
 
 				this.settings = this.defaultOptions
 
-				 //highlight modes
-				 this.HIGHLIGHT_COLOR = 'highlightColor';
-				 this.HIGHLIGHT_ERASE = 'highlightErase';
+				//highlight modes
+				this.HIGHLIGHT_COLOR = 'highlightColor';
+				this.HIGHLIGHT_ERASE = 'highlightErase';
 
-				 this.highlightMode = this.HIGHLIGHT_COLOR;
+				this.highlightMode = this.HIGHLIGHT_COLOR;
 
-				 this.colors = [{
-				   "color": "d9534f",
-				   "name" :'bootstrapred'
-				 },
-				 {
-				   "color": "428bca",
-				   "name" : 'blue'
-				 },
-				 {
-				   "color": "5cb85c",
-				   "name" : 'green'
-				 }];
+				this.colors = [{
+				 "color": "d9534f",
+				 "name" :'bootstrapred'
+				},
+				{
+				 "color": "428bca",
+				 "name" : 'blue'
+				},
+				{
+				 "color": "5cb85c",
+				 "name" : 'green'
+				}];
 
-				 this.heatmapData = {};
-				 this.aceEditSession = null;
-				 this.selectionColor = this.colors[0];
-				 this.oldRange = null;
-				 this.oldstart = null;
-				 this.lastMarker = null;
-				 this._isMouseDown = false;
-				 this._haveToApplyHighlightChange = false;
-				 this.rangeIdPrefix = 'he-range-item-';
+				this.heatmapData = {};
+				this.aceEditSession = null;
+				this.selectionColor = this.colors[0];
+				this.oldRange = null;
+				this.oldstart = null;
+				this.lastMarker = null;
+				this._isMouseDown = false;
+				this._haveToApplyHighlightChange = false;
+				this.rangeIdPrefix = 'he-range-item-';
 
-				 if(this.editor){
-				 	this.init();
-				 }
+				if(this.editor){
+					this.init();
+				}
 			},
 
 			_editorChanged: function(){
@@ -176,6 +184,9 @@
 		    ///setup ace editor
 		    this.aceEditSession = this.editor.getSession();
 		    this.modes[this.mode]();
+
+		    this.disabled ? this.disable() : this.enable();
+		    this._initialized = true;
 			},
 
 			clearSelection: function(){
@@ -293,14 +304,58 @@
 		    return occurences;
 		  },
 
+		  _disabledChanged: function(newValue, oldValue){
+		  	if( !this._initialized || newValue === oldValue) return;
+
+		  	(newValue === true) ? this.disable() : this.enable()
+		  },
+
+		  disable: function(){
+		  	this.editor.container.style.pointerEvents="none";
+		  	this.editor.container.style.opacity=0.6 ;
+		  	this.editor.renderer.setStyle("disabled", true);
+		  	this.editor.blur();
+		  	this.editor.setOptions({
+		  	    highlightActiveLine: false,
+		  	    highlightGutterLine: false
+		  	})
+		  	this.editor.renderer.$cursorLayer.element.style.opacity=0;
+
+		  	if(this.mode === this.MODE_HIGHLIGHT){
+		  		this.aceEditSession
+		      .selection.off('changeSelection', this.onChangeSelectionBinded);
+		  	}else if(this.mode === this.MODE_EDIT_TEXT){
+		  		this.editor.setReadOnly(true);
+		  	}
+		  },
+
+		  enable: function(){
+		  	this.editor.container.style.pointerEvents="auto";
+		  	this.editor.container.style.opacity=1.0 ;
+		  	this.editor.renderer.setStyle("disabled", false);
+		  	this.editor.setOptions({
+		  	    highlightActiveLine: true,
+		  	    highlightGutterLine: true
+		  	})
+		  	this.editor.renderer.$cursorLayer.element.style.opacity=1;
+
+	  		if(this.mode === this.MODE_HIGHLIGHT){
+	  			this.aceEditSession
+	  	    .selection.on('changeSelection', this.onChangeSelectionBinded);
+	  		}else if(this.mode === this.MODE_EDIT_TEXT){
+	  			this.editor.setReadOnly(false);
+	  		}
+		  },
+
 		  _modeChanged: function(newValue, oldValue){
 		  	if(oldValue === newValue) return;
+
 		    if(this.modes && this.modes[newValue]){
 		      this.modes[newValue]();
 		    }
 		  },
 
-		  setInEditTextMode: function(){
+		  setInEditTextMode: function(removeMarkers){
 		    this.mode = this.MODE_EDIT_TEXT;
 		    this.removeAllMarkers();
 		    this.editor.setReadOnly(false);
@@ -308,7 +363,7 @@
 		      .selection.off('changeSelection', this.onChangeSelectionBinded);
 		  },
 
-		  setInHeatmapMode: function(){
+		  setInHeatmapMode: function(removeMarkers){
 		    this.mode = this.MODE_HEATMAP;
 		    this.removeAllMarkers();
 		    this.editor.setReadOnly(true);
@@ -316,7 +371,7 @@
 		      .selection.off('changeSelection', this.onChangeSelectionBinded);
 		  },
 
-		  setInHighlightMode: function(){
+		  setInHighlightMode: function(removeMarkers){
 		    this.mode = this.MODE_HIGHLIGHT;
 		    this.removeAllMarkers();
 		    this.editor.setReadOnly(true);

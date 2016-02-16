@@ -15,6 +15,7 @@
 <link rel="import" href="../asq-hl-color-task/asq-hl-color-task.html">
 <link rel="import" href="../color-palette.html">
 <link rel="import" href="../hl-inspector/hl-inspector.html">
+<link rel="import" href="../hl-icons.html">
 <link rel="import" href="./asq-highlight-viewer-q-styles.html">
 <link rel="import" href="../../button-styles.html">
 
@@ -52,6 +53,11 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
         --paper-toolbar-color: #000;  
       }
 
+      :host[disabled]{
+        /*opacity: 0.6;*/
+        /*pointer-events: none;*/
+      }
+
       #mainContainer{
         @apply(--layout-horizontal);
         @apply(--layout-flex);
@@ -83,6 +89,7 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
       #statusMsg{
         padding: 0 5px;
       }
+
     </style>
     <div id="leContent">
       <content id="stemContent" select="asq-stem"></content>
@@ -98,19 +105,19 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
       <div id="editorContainer">
 
         <paper-toolbar>        
-          <color-palette id="colorPalette" selected="{{colorPaletteSelected}}" on-down="_setHighlightMode" palette="{{palette}}" selected-color="{{colorPaletteSelectedColor}}"></color-palette>
-          <paper-icon-button id="eraseBtn" icon="editor:format-color-reset" title="Erase mode" on-tap="_setEraseMode"></paper-icon-button>
+          <color-palette id="colorPalette" disabled="{{disabled}}" selected="{{colorPaletteSelected}}" on-down="_setHighlightMode" palette="{{palette}}" selected-color="{{colorPaletteSelectedColor}}"></color-palette>
+          <paper-icon-button id="eraseBtn" icon="hl-icons:eraser" title="Eraser" on-tap="_setEraseMode" disabled="{{disabled}}"></paper-icon-button>
           <span id="statusMsg">{{currentTaskDescription}}</span>
         </paper-toolbar>
 
         <div id="aceContainer">
-          <ace-element id="codeEditor" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" disabled="{{disabled}}" wrap="{{wrap}}">{{aceValue}}</ace-element>
-          <ace-highlight-manager id="aceHighlightManager" colors="{{palette}}" selection-color="{{colorPaletteSelectedColor}}" range-items="{{aceHighlightManagerRangeItems}}" occurence-items="{{aceHighlightManagerOccurenceItems}}" on-highlightrangeschanged="_highlightRangesChanged"></ace-highlight-manager>
+          <ace-element id="codeEditor" mode="{{mode}}" theme="{{theme}}" font-size="{{fontSize}}" tab-size="{{tabSize}}" wrap="{{wrap}}">{{aceValue}}</ace-element>
+          <ace-highlight-manager id="aceHighlightManager" disabled="{{disabled}}" colors="{{palette}}" selection-color="{{colorPaletteSelectedColor}}" range-items="{{aceHighlightManagerRangeItems}}" occurence-items="{{aceHighlightManagerOccurenceItems}}" on-highlightrangeschanged="_highlightRangesChanged"></ace-highlight-manager>
         </div>
 
       </div>
       
-      <hl-inspector id="inspector" range-items="{{aceHighlightManagerRangeItems}}" occurence-items="{{aceHighlightManagerOccurenceItems}}" on-hl-inspector-remove-range="_removeRange"></hl-inspector>
+      <hl-inspector id="inspector" disabled="{{disabled}}" range-items="{{aceHighlightManagerRangeItems}}" occurence-items="{{aceHighlightManagerOccurenceItems}}" on-hl-inspector-remove-range="_removeRange"></hl-inspector>
       
     </div>
 
@@ -140,7 +147,8 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
             type: Boolean,
             value: false,
             notify: true,
-            reflectToAttribute: true
+            reflectToAttribute: true,
+            observer: "_disabledChanged"
           },
 
           /**
@@ -239,8 +247,19 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
           //     console.debug('failed to subscribeToEvents');
           //   }
           // }.bind(this));
-          this._populatePalette();
           this.$.taskSelector.selected = 0;
+
+          this._observer = Polymer.dom(this.$.tasksContent).observeNodes(function(info) {
+            var newElements = info.addedNodes.filter(function(node) {
+              return (node.nodeType === Node.ELEMENT_NODE)
+            });
+
+            this._setDisabledAttrToNewHlTasks(newElements);
+            this._populatePalette();
+
+            //cleanup observer. At the moment we support adding colors only once
+            this._observer && Polymer.dom(this.$.tasksContent).unobserveNodes(this._observer);
+          }.bind(this));
 
           //initialize highlight manager
           // fixme: the reason for the timeout is that ace-element changes it's editor property internally. maybe expose it as areadonly
@@ -251,16 +270,33 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
             this.$.aceHighlightManager.editor = this.$.codeEditor.editor; 
             this.$.codeEditor.editor.resize();
           }.bind(this),100)
+
+        },
+
+        _setDisabledAttrToNewHlTasks: function(tasks){
+          var dis = this.disabled;
+          tasks.forEach(function (task) {
+            task.disabled = dis;
+          });
+        },
+
+        _disabledChanged: function (newValue) {
+          this.tasks.forEach(function (task) {
+            task.disabled = newValue;
+          });
         },
 
         _populatePalette: function () {
-          var tasks = Polymer.dom(this.$.tasksContent).getDistributedNodes();
-          this.palette = Array.prototype.map.call(tasks, function (task) {
+          this.palette = this.tasks.map(function (task) {
             return {
               'color': task.color,
               'name': task.colorName
             };
           });
+        },
+
+        get tasks(){
+          return Polymer.dom(this.$.tasksContent).getDistributedNodes();
         },
 
         _setHighlightMode: function (event, detail) {

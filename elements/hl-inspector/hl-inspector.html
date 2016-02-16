@@ -18,6 +18,11 @@
         --paper-tabs-selection-bar-color: #333;
       }
 
+      :host[disabled]{
+        pointer-events: none;
+        opacity: 0.6;
+      }
+
       paper-tabs{
         @apply(--layout-horizontal);
         @apply(--layout-center);
@@ -117,6 +122,12 @@
           value: function(){return[]},
           notify: true
         },
+        disabled:{
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          notify: true
+        },
         selected: { notify: true }
       },
 
@@ -128,12 +139,15 @@
 
       expandClick: function (evt, detail) {
         evt.preventDefault();
+        if(this.disabled) return;
+
         var forId = event.currentTarget.for;
         var nodeToToggle = Polymer.dom(this.root).querySelector("#" + forId)
         nodeToToggle.classList.toggle('expanded');
       },
 
       _onRemoveRangeTap: function(evt, detail){
+        if(this.disabled) return;
         this.fire('hl-inspector-remove-range', { rangeId: evt.currentTarget.forRangeId })
       },
 

@@ -9,60 +9,119 @@
         padding:4px 5px;
         cursor: pointer;
       }
+      
+      /* TODO(triglian):
+      Use material design color vars
+      */
+      :host[disabled]{
+        color: #9b9b9b;
+        pointer-events: none;
+      }
 
       #checkIcon, #emptyIcon{
         display:none;
       }
+
+      #checkIcon[disabled]{
+        color: #9b9b9b;
+      }
+
     </style>
   <template>
     
     <div>
-      <iron-icon id="checkIcon" icon="check" aria-label="color" role="img" style$="{{_computeStyle(color)}}"></iron-icon><iron-icon id="emptyIcon" icon="" aria-label="color" role="img" style$="{{_computeStyle(color)}}"></iron-icon>&nbsp;<content></content>
+      <iron-icon id="checkIcon" disabled="{{disabled}}" icon="check" aria-label="color" role="img" style$="{{_computeStyle(color)}}"></iron-icon><iron-icon id="emptyIcon" icon="" aria-label="color" role="img" style$="{{_computeStyle(color)}}"></iron-icon>&nbsp;<content></content>
     </div>
   </template>
   <script>
-    Polymer({
-      is: 'asq-hl-color-task',
-      
-      properties: {
-        active: {
-          type: Boolean,
-          value: false,
-          reflectToAttribute: true,
-          notify: true,
-          observer: '_activeChanged'
-        },
-        color: {
-          type: String,
-          value: '',
-          notify: true
-        },
-        colorName: { notify: true }
-      },
+    (function(){
 
-      _activeChanged: function (newVal, oldVal) {
-        // why do I have two iron-icon elements instead of one where I can
-        // set the icon attribute to `check` or `` you ask?
-        // Well, this element is used inside iron-selector elementss
-        // which have a mutation observer that gets triggered
-        // when you change the icon since a change replaces the whole
-        // iron-icon. Bummer I know.
-        if(newVal){
-          this.$.checkIcon.style.display = "inline-flex";
-          this.$.emptyIcon.style.display = "none";
-        }else{
-          this.$.checkIcon.style.display = "none";
-          this.$.emptyIcon.style.display = "inline-flex";
-        }
-      },
-
-      _computeStyle: function (color) {
-        return 'background-color: #' + color + ';';
-      },
-
-      attached: function attached(){
-        this._activeChanged(this.active);
+      // HEX TO RGB
+      function hexToRgb(hex, alpha) {
+          var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+          var toString = function () {
+              if (this.alpha == undefined) {
+                  return "rgb(" + this.r + ", " + this.g + ", " + this.b + ")";
+              }
+              if (this.alpha > 1) {
+                  this.alpha = 1;
+              } else if (this.alpha < 0) {
+                  this.alpha = 0;
+              }
+              return "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + this.alpha + ")";
+          } 
+          if (alpha == undefined) {
+              return result ? {
+                  r: parseInt(result[1], 16),
+                  g: parseInt(result[2], 16),
+                  b: parseInt(result[3], 16),
+                  toString: toString
+              } : null;
+          }
+          if (alpha > 1) {
+              alpha = 1;
+          } else if (alpha < 0) {
+              alpha = 0;
+          }
+          return result ? {
+              r: parseInt(result[1], 16),
+              g: parseInt(result[2], 16),
+              b: parseInt(result[3], 16),
+              alpha: alpha,
+              toString: toString
+          } : null;
       }
-    });
+
+      Polymer({
+        is: 'asq-hl-color-task',
+        
+        properties: {
+          active: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true,
+            notify: true,
+            observer: '_activeChanged'
+          },
+          disabled:{
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true
+          },
+          color: {
+            type: String,
+            value: '',
+            notify: true
+          },
+          colorName: { notify: true }
+        },
+
+        _activeChanged: function (newVal, oldVal) {
+          // why do I have two iron-icon elements instead of one where I can
+          // set the icon attribute to `check` or `` you ask?
+          // Well, this element is used inside iron-selector elementss
+          // which have a mutation observer that gets triggered
+          // when you change the icon since a change replaces the whole
+          // iron-icon. Bummer I know.
+          if(newVal){
+            this.$.checkIcon.style.display = "inline-flex";
+            this.$.emptyIcon.style.display = "none";
+          }else{
+            this.$.checkIcon.style.display = "none";
+            this.$.emptyIcon.style.display = "inline-flex";
+          }
+        },
+
+        _computeStyle: function (color) {
+          var alpha = this.disabled? 0.6 : 1;
+          var rgbaColor = hexToRgb(color, alpha);
+          return 'background-color: ' + rgbaColor.toString(); 
+        },
+
+        attached: function attached(){
+          this._activeChanged(this.active);
+        }
+      });
+    })();
   </script>
 </dom-module>

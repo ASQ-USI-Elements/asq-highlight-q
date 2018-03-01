@@ -288,10 +288,15 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
 
         _injectMarkerStyles(){
           this.importHref(this.resolveUrl('./ace-marker-styles-viewer.html'), function(e) {
-             var template = e.target.import.querySelector('template');
-             var styleEl = template.content.querySelector('style');
-             var liveStyleEl = document.importNode(styleEl, true);
-             this.$.codeEditor.appendChild(liveStyleEl);
+            var template = e.target.import.querySelector('template');
+            var styleEl = template.content.querySelector('style');
+            var liveStyleEl = document.importNode(styleEl, true);
+            this.$.codeEditor.appendChild(liveStyleEl);
+            if (window.Polymer.Settings.dom === 'shadow' || window.Polymer.Settings.useShadow ) {
+              Polymer.dom(this.$.codeEditor.root).appendChild(liveStyleEl);
+            }else{
+              this.$.codeEditor.appendChild(liveStyleEl);
+            }
           }, function(e) {
               // loading error
               console.error('Could not import ace-marker-styles-viewer.html')

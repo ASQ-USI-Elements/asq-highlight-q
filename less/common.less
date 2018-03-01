@@ -1,28 +1,7 @@
 // mixins
 @import "lib/lesshat.less";
 
-// do not show solution or code
-#leContent > ::content asq-solution {display: none};
-#leContent > ::content code {display: none};
-
-/* make ace editor stretch to fill this not the parent*/
-#aceContainer{
-  position:relative;
-}
-
-#statusMsg{
-  font-size:14px;
-}
-
- paper-tooltip.special:hover::shadow .paper-tooltip,
- paper-tooltip.special:focus::shadow .paper-tooltip {
-    opacity: 1;
-    -webkit-transition-delay: 1s;
-    transition-delay: 1s;
-    transform: translate3d(0px, 0px, 0px);
-  }
-
-ace-element::shadow .ace_highlight {
+.ace_highlight {
     position: absolute;
     z-index: 4;
 }
@@ -53,15 +32,15 @@ ace-element::shadow .ace_highlight {
 @magenta-name: marker-ff00ff;
 @red-name: marker-ff0100;
 
-ace-element::shadow .@{bootstrapred-name} { background-color: color(@bootstrapred-color);}
-ace-element::shadow .@{blue-name} { background-color: @blue-color;}
-ace-element::shadow .@{green-name} { background-color: @green-color;}
-ace-element::shadow .@{orange-name} { background-color: @orange-color;}
-ace-element::shadow .@{darkred-name} { background-color: @darkred-color;}
-ace-element::shadow .@{gold-name} { background-color: @gold-color}
-ace-element::shadow .@{darkkhaki-name} { background-color: @darkkhaki-color;}
-ace-element::shadow .@{navy-name} { background-color: @navy-color;}
-ace-element::shadow .@{mediumorchid-name} { background-color: @mediumorchid-color;}
-ace-element::shadow .@{lightgreen-name} { background-color: @lightgreen-color;}
-ace-element::shadow .@{magenta-name} { background-color: @magenta-color;}
-ace-element::shadow .@{red-name} { background-color: @red-color;}
+.@{bootstrapred-name} { background-color: color(@bootstrapred-color);}
+.@{blue-name} { background-color: @blue-color;}
+.@{green-name} { background-color: @green-color;}
+.@{orange-name} { background-color: @orange-color;}
+.@{darkred-name} { background-color: @darkred-color;}
+.@{gold-name} { background-color: @gold-color}
+.@{darkkhaki-name} { background-color: @darkkhaki-color;}
+.@{navy-name} { background-color: @navy-color;}
+.@{mediumorchid-name} { background-color: @mediumorchid-color;}
+.@{lightgreen-name} { background-color: @lightgreen-color;}
+.@{magenta-name} { background-color: @magenta-color;}
+.@{red-name} { background-color: @red-color;}

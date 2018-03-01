@@ -15,7 +15,6 @@
 <link rel="import" href="../color-palette.html">
 <link rel="import" href="../hl-inspector/hl-inspector.html">
 <link rel="import" href="../hl-icons.html">
-<link rel="import" href="./asq-highlight-viewer-q-styles.html">
 <link rel="import" href="../../button-styles.html">
 
 <!--
@@ -42,7 +41,6 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
 
 <dom-module id="asq-highlight-viewer-q">
   <template>
-    <style include="asq-highlight-viewer-q-styles"></style>
     <style include="button-styles"></style>
     <style>
       :host{
@@ -55,6 +53,13 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
       :host[disabled]{
         /*opacity: 0.6;*/
         /*pointer-events: none;*/
+      }
+
+      #leContent > ::content asq-solution {
+        display: none;
+      }
+      #leContent > ::content code {
+        display: none;
       }
 
       #mainContainer{
@@ -70,6 +75,8 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
       }
 
       #aceContainer{
+        /* make ace editor stretch to fill this not the parent*/
+        position: relative;
         @apply(--layout-flex);
       }
 
@@ -86,7 +93,12 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
       }
 
       #statusMsg{
+        font-size: 14px;
         padding: 0 5px;
+      }
+
+      paper-icon-button{
+        font-size: 16px;
       }
 
     </style>
@@ -238,6 +250,8 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
         },
 
         attached: function () {
+          this._injectMarkerStyles();
+
           this.$.aceHighlightManager.mode = this.$.aceHighlightManager.MODE_HIGHLIGHT;
           // document.addEventListener('asq-ready', function (evt) {
           //   try {
@@ -270,6 +284,18 @@ Viewer version of asq-highlight-q. Normally this element is used by an `<asq-hig
             this.$.codeEditor.editor.resize();
           }.bind(this),100)
 
+        },
+
+        _injectMarkerStyles(){
+          this.importHref(this.resolveUrl('./ace-marker-styles-viewer.html'), function(e) {
+             var template = e.target.import.querySelector('template');
+             var styleEl = template.content.querySelector('style');
+             var liveStyleEl = document.importNode(styleEl, true);
+             this.$.codeEditor.appendChild(liveStyleEl);
+          }, function(e) {
+              // loading error
+              console.error('Could not import ace-marker-styles-viewer.html')
+          });
         },
 
         _setDisabledAttrToNewHlTasks: function(tasks){

@@ -1,0 +1,408 @@
+<dom-module id="ace-marker-styles-presenter">
+  <template>
+    <style>
+
+.ace_highlight {
+  position: absolute;
+  z-index: 4;
+}
+.marker-d9534f {
+  background-color: #d9534f;
+}
+.marker-428bca {
+  background-color: #428bca;
+}
+.marker-5cb85c {
+  background-color: #5cb85c;
+}
+.marker-f0ad4e {
+  background-color: #f0ad4e;
+}
+.marker-8b0000 {
+  background-color: #8b0000;
+}
+.marker-ffd700 {
+  background-color: #ffd700;
+}
+.marker-bdb76b {
+  background-color: #bdb76b;
+}
+.marker-000080 {
+  background-color: #000080;
+}
+.marker-ba55d3 {
+  background-color: #ba55d3;
+}
+.marker-90ee90 {
+  background-color: #90ee90;
+}
+.marker-ff00ff {
+  background-color: #ff00ff;
+}
+.marker-ff0100 {
+  background-color: #ff0100;
+}
+.marker-d9534f-1 {
+  background-color: #f1dbda;
+}
+.marker-d9534f-2 {
+  background-color: #e9bfbd;
+}
+.marker-d9534f-3 {
+  background-color: #e2a19f;
+}
+.marker-d9534f-4 {
+  background-color: #dd827f;
+}
+.marker-d9534f-5 {
+  background-color: #da615e;
+}
+.marker-d9534f-6 {
+  background-color: #d83f3a;
+}
+.marker-d9534f-7 {
+  background-color: #cc2722;
+}
+.marker-d9534f-8 {
+  background-color: #b11c18;
+}
+.marker-d9534f-9 {
+  background-color: #941410;
+}
+.marker-d9534f-10 {
+  background-color: #760d0a;
+}
+.marker-428bca-1 {
+  background-color: #dae6f1;
+}
+.marker-428bca-2 {
+  background-color: #bdd5e9;
+}
+.marker-428bca-3 {
+  background-color: #9fc3e2;
+}
+.marker-428bca-4 {
+  background-color: #7fb2dd;
+}
+.marker-428bca-5 {
+  background-color: #5ea0da;
+}
+.marker-428bca-6 {
+  background-color: #3a8fd8;
+}
+.marker-428bca-7 {
+  background-color: #227dcc;
+}
+.marker-428bca-8 {
+  background-color: #186ab1;
+}
+.marker-428bca-9 {
+  background-color: #105794;
+}
+.marker-428bca-10 {
+  background-color: #0a4476;
+}
+.marker-5cb85c-1 {
+  background-color: #daf1da;
+}
+.marker-5cb85c-2 {
+  background-color: #bde9bd;
+}
+.marker-5cb85c-3 {
+  background-color: #9fe29f;
+}
+.marker-5cb85c-4 {
+  background-color: #7fdd7f;
+}
+.marker-5cb85c-5 {
+  background-color: #5eda5e;
+}
+.marker-5cb85c-6 {
+  background-color: #3ad83a;
+}
+.marker-5cb85c-7 {
+  background-color: #22cc22;
+}
+.marker-5cb85c-8 {
+  background-color: #18b118;
+}
+.marker-5cb85c-9 {
+  background-color: #109410;
+}
+.marker-5cb85c-10 {
+  background-color: #0a760a;
+}
+.marker-f0ad4e-1 {
+  background-color: #f1e7da;
+}
+.marker-f0ad4e-2 {
+  background-color: #e9d7bd;
+}
+.marker-f0ad4e-3 {
+  background-color: #e2c69f;
+}
+.marker-f0ad4e-4 {
+  background-color: #ddb67f;
+}
+.marker-f0ad4e-5 {
+  background-color: #daa75e;
+}
+.marker-f0ad4e-6 {
+  background-color: #d8973a;
+}
+.marker-f0ad4e-7 {
+  background-color: #cc8622;
+}
+.marker-f0ad4e-8 {
+  background-color: #b17218;
+}
+.marker-f0ad4e-9 {
+  background-color: #945e10;
+}
+.marker-f0ad4e-10 {
+  background-color: #76490a;
+}
+.marker-8b0000-1 {
+  background-color: #f1dada;
+}
+.marker-8b0000-2 {
+  background-color: #e9bdbd;
+}
+.marker-8b0000-3 {
+  background-color: #e29f9f;
+}
+.marker-8b0000-4 {
+  background-color: #dd7f7f;
+}
+.marker-8b0000-5 {
+  background-color: #da5e5e;
+}
+.marker-8b0000-6 {
+  background-color: #d83a3a;
+}
+.marker-8b0000-7 {
+  background-color: #cc2222;
+}
+.marker-8b0000-8 {
+  background-color: #b11818;
+}
+.marker-8b0000-9 {
+  background-color: #941010;
+}
+.marker-8b0000-10 {
+  background-color: #760a0a;
+}
+.marker-ffd700-1 {
+  background-color: #f1edda;
+}
+.marker-ffd700-2 {
+  background-color: #e9e2bd;
+}
+.marker-ffd700-3 {
+  background-color: #e2d89f;
+}
+.marker-ffd700-4 {
+  background-color: #ddcf7f;
+}
+.marker-ffd700-5 {
+  background-color: #dac75e;
+}
+.marker-ffd700-6 {
+  background-color: #d8c03a;
+}
+.marker-ffd700-7 {
+  background-color: #ccb222;
+}
+.marker-ffd700-8 {
+  background-color: #b19918;
+}
+.marker-ffd700-9 {
+  background-color: #948010;
+}
+.marker-ffd700-10 {
+  background-color: #76650a;
+}
+.marker-bdb76b-1 {
+  background-color: #f1efda;
+}
+.marker-bdb76b-2 {
+  background-color: #e9e6bd;
+}
+.marker-bdb76b-3 {
+  background-color: #e2dd9f;
+}
+.marker-bdb76b-4 {
+  background-color: #ddd67f;
+}
+.marker-bdb76b-5 {
+  background-color: #dad15e;
+}
+.marker-bdb76b-6 {
+  background-color: #d8cd3a;
+}
+.marker-bdb76b-7 {
+  background-color: #ccc022;
+}
+.marker-bdb76b-8 {
+  background-color: #b1a618;
+}
+.marker-bdb76b-9 {
+  background-color: #948b10;
+}
+.marker-bdb76b-10 {
+  background-color: #766e0a;
+}
+.marker-000080-1 {
+  background-color: #dadaf1;
+}
+.marker-000080-2 {
+  background-color: #bdbde9;
+}
+.marker-000080-3 {
+  background-color: #9f9fe2;
+}
+.marker-000080-4 {
+  background-color: #7f7fdd;
+}
+.marker-000080-5 {
+  background-color: #5e5eda;
+}
+.marker-000080-6 {
+  background-color: #3a3ad8;
+}
+.marker-000080-7 {
+  background-color: #2222cc;
+}
+.marker-000080-8 {
+  background-color: #1818b1;
+}
+.marker-000080-9 {
+  background-color: #101094;
+}
+.marker-000080-10 {
+  background-color: #0a0a76;
+}
+.marker-ba55d3-1 {
+  background-color: #ecdaf1;
+}
+.marker-ba55d3-2 {
+  background-color: #e0bde9;
+}
+.marker-ba55d3-3 {
+  background-color: #d59fe2;
+}
+.marker-ba55d3-4 {
+  background-color: #cb7fdd;
+}
+.marker-ba55d3-5 {
+  background-color: #c15eda;
+}
+.marker-ba55d3-6 {
+  background-color: #b93ad8;
+}
+.marker-ba55d3-7 {
+  background-color: #aa22cc;
+}
+.marker-ba55d3-8 {
+  background-color: #9318b1;
+}
+.marker-ba55d3-9 {
+  background-color: #7a1094;
+}
+.marker-ba55d3-10 {
+  background-color: #600a76;
+}
+.marker-90ee90-1 {
+  background-color: #daf1da;
+}
+.marker-90ee90-2 {
+  background-color: #bde9bd;
+}
+.marker-90ee90-3 {
+  background-color: #9fe29f;
+}
+.marker-90ee90-4 {
+  background-color: #7fdd7f;
+}
+.marker-90ee90-5 {
+  background-color: #5eda5e;
+}
+.marker-90ee90-6 {
+  background-color: #3ad83a;
+}
+.marker-90ee90-7 {
+  background-color: #22cc22;
+}
+.marker-90ee90-8 {
+  background-color: #18b118;
+}
+.marker-90ee90-9 {
+  background-color: #109410;
+}
+.marker-90ee90-10 {
+  background-color: #0a760a;
+}
+.marker-ff00ff-1 {
+  background-color: #f1daf1;
+}
+.marker-ff00ff-2 {
+  background-color: #e9bde9;
+}
+.marker-ff00ff-3 {
+  background-color: #e29fe2;
+}
+.marker-ff00ff-4 {
+  background-color: #dd7fdd;
+}
+.marker-ff00ff-5 {
+  background-color: #da5eda;
+}
+.marker-ff00ff-6 {
+  background-color: #d83ad8;
+}
+.marker-ff00ff-7 {
+  background-color: #cc22cc;
+}
+.marker-ff00ff-8 {
+  background-color: #b118b1;
+}
+.marker-ff00ff-9 {
+  background-color: #941094;
+}
+.marker-ff00ff-10 {
+  background-color: #760a76;
+}
+.marker-ff0100-1 {
+  background-color: #f1dada;
+}
+.marker-ff0100-2 {
+  background-color: #e9bebd;
+}
+.marker-ff0100-3 {
+  background-color: #e29f9f;
+}
+.marker-ff0100-4 {
+  background-color: #dd807f;
+}
+.marker-ff0100-5 {
+  background-color: #da5e5e;
+}
+.marker-ff0100-6 {
+  background-color: #d83b3a;
+}
+.marker-ff0100-7 {
+  background-color: #cc2222;
+}
+.marker-ff0100-8 {
+  background-color: #b11918;
+}
+.marker-ff0100-9 {
+  background-color: #941010;
+}
+.marker-ff0100-10 {
+  background-color: #760a0a;
+}
+
+    </style>
+  </template>
+</dom-module

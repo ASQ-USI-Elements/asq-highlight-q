@@ -26,8 +26,8 @@ module.exports = function(grunt) {
     less: {
       development: {
         files: {
-          "elements/asq-highlight-presenter-q/asq-highlight-presenter-q-styles.html": "elements/asq-highlight-presenter-q/asq-highlight-presenter-q.less",
-          "elements/asq-highlight-viewer-q/asq-highlight-viewer-q-styles.html": "elements/asq-highlight-viewer-q/asq-highlight-viewer-q.less",
+          "elements/asq-highlight-presenter-q/ace-marker-styles-presenter.html": "elements/asq-highlight-presenter-q/ace-marker-styles-presenter.less",
+          "elements/asq-highlight-viewer-q/ace-marker-styles-viewer.html": "elements/asq-highlight-viewer-q/ace-marker-styles-viewer.less",
           "elements/hl-inspector/hl-inspector-styles.html": "elements/hl-inspector/hl-inspector.less"
         }
       },
@@ -36,8 +36,8 @@ module.exports = function(grunt) {
           yuicompress: true
         },
         files: {
-          "elements/asq-highlight-presenter-q/asq-highlight-presenter-q-styles.html": "elements/asq-highlight-presenter-q/asq-highlight-presenter-q.less",
-          "elements/asq-highlight-viewer-q/asq-highlight-viewer-q-styles.html": "elements/asq-highlight-viewer-q/asq-highlight-viewer-q.less",
+          "elements/asq-highlight-presenter-q/ace-marker-styles-presenter.html": "elements/asq-highlight-presenter-q/ace-marker-styles-presenter.less",
+          "elements/asq-highlight-viewer-q/ace-marker-styles-viewer.html": "elements/asq-highlight-viewer-q/ace-marker-styles-viewer.less",
           "elements/hl-inspector/hl-inspector-styles.html": "elements/hl-inspector/hl-inspector.less"
         }
       }
@@ -52,21 +52,21 @@ module.exports = function(grunt) {
       },
       css_presenter: {
         options:{
-          banner: '<dom-module id="asq-highlight-presenter-q-styles">\n' +
+          banner: '<dom-module id="ace-marker-styles-presenter">\n' +
                   '  <template>\n' +
                   '    <style>\n\n'
         },
-        src: ['elements/asq-highlight-presenter-q/asq-highlight-presenter-q-styles.html'],
-        dest: 'elements/asq-highlight-presenter-q/asq-highlight-presenter-q-styles.html',
+        src: ['elements/asq-highlight-presenter-q/ace-marker-styles-presenter.html'],
+        dest: 'elements/asq-highlight-presenter-q/ace-marker-styles-presenter.html',
       },
       css_viewer: {
         options:{
-          banner: '<dom-module id="asq-highlight-viewer-q-styles">\n' +
+          banner: '<dom-module id="ace-marker-styles-viewer">\n' +
                   '  <template>\n' +
                   '    <style>\n\n'
         },
-        src: ['elements/asq-highlight-viewer-q/asq-highlight-viewer-q-styles.html'],
-        dest: 'elements/asq-highlight-viewer-q/asq-highlight-viewer-q-styles.html',
+        src: ['elements/asq-highlight-viewer-q/ace-marker-styles-viewer.html'],
+        dest: 'elements/asq-highlight-viewer-q/ace-marker-styles-viewer.html',
       },
       css_hl_inspector: {
         options:{

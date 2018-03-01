@@ -18,7 +18,6 @@
 <link rel="import" href="../ace-highlight-manager/ace-highlight-manager.html">
 <link rel="import" href="../asq-hl-color-task/asq-hl-color-task.html">
 <link rel="import" href="../color-palette.html">
-<link rel="import" href="./asq-highlight-presenter-q-styles.html">
 <link rel="import" href="../../button-styles.html">
 
 <!--
@@ -46,7 +45,6 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
 <dom-module id="asq-highlight-presenter-q">
 
   <template>
-    <style include="asq-highlight-presenter-q-styles"></style>
     <style include="button-styles"></style>
     <style>
       :host{
@@ -55,6 +53,13 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         --paper-toolbar-background: #CFD8DC;
         --paper-toolbar-color: #000;  
         --paper-tabs-selection-bar-color: #333;
+      }
+
+      #leContent > ::content asq-solution {
+        display: none;
+      }
+      #leContent > ::content code {
+        display: none;
       }
 
       #mainContainer{
@@ -70,11 +75,14 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
       }
 
       #aceContainer{
+        /* make ace editor stretch to fill this not the parent*/
+        position: relative;
         @apply(--layout-flex);
       }
 
       #statusMsg{
-         @apply(--layout-flex);
+        font-size: 14px;
+        @apply(--layout-flex);
       }
 
       #inspector {
@@ -99,6 +107,10 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         @apply(--layout-vertical);
         @apply(--layout-flex-2);
         @apply(--asq-highlight-q-inspector);
+      }
+
+      paper-icon-button{
+        font-size: 16px;
       }
 
     </style>
@@ -279,6 +291,7 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
         },
 
         attached: function(){
+          this._injectMarkerStyles();
           this._populatePalette();
           //initialize highlight manager
           // fixme: the reason for the timeout is that ace-element changes it's editor property internally. maybe expose it as a readonly so that the pointer is always cool
@@ -294,6 +307,18 @@ Presenter version of asq-highlight-q. Normally this element is used by an `<asq-
 
         ready: function () {
           this.$.aceHighlightManager.mode = this.$.aceHighlightManager.MODE_HEATMAP;
+        },
+
+        _injectMarkerStyles(){
+          this.importHref(this.resolveUrl('./ace-marker-styles-presenter.html'), function(e) {
+             var template = e.target.import.querySelector('template');
+             var styleEl = template.content.querySelector('style');
+             var liveStyleEl = document.importNode(styleEl, true);
+             this.$.codeEditor.appendChild(liveStyleEl);
+          }, function(e) {
+              // loading error
+              console.error('Could not import ace-marker-styles-presenter.html')
+          });
         },
 
         _populatePalette: function () {
